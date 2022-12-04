@@ -2,10 +2,7 @@
 {
     public class Settings
     {
-        private string[] _ports;
-        private string _ipAddress;
-
-        public string IpAddress { get => _ipAddress; set => _ipAddress = value; }
-        public string[] Ports { get => _ports; set => _ports = value; } 
+        public string? IpAddress { get; set; }
+        public string[]? Ports { get; set; }
     }
 }
