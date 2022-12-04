@@ -2,7 +2,13 @@
 {
     public class Settings
     {
-        public string? IpAddress { get; set; }
-        public string[]? Ports { get; set; }
+        public virtual string? IpAddress { get; set; }
+        public virtual IList<string> Ports { get; set; }
+
+        public Settings()
+        {
+            IpAddress = string.Empty;
+            Ports = new List<string>();
+        }
     }
 }

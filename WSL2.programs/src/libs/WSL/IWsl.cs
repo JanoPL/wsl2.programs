@@ -5,7 +5,8 @@
         public Settings Settings { get; }
 
         public IWsl SetIpAddress(string IpAddress);
-        public IWsl SetPort(int port);
-        public IWsl SetPorts(IEnumerable<string> ports);
+        public IWsl AddPort(int port);
+        public IWsl AddPort(string port);
+        public IWsl SetPorts(IList<string> ports);
     }
 }

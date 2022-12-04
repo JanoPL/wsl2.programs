@@ -15,6 +15,15 @@
             }
         }
 
+        public Wsl()
+        {
+            if (Settings == null) {
+                _settings = new Settings();
+            } else {
+                _settings = Settings;
+            }
+        }
+
         private IWsl SetSettings(Settings settings)
         {
             _settings = settings;
@@ -28,17 +37,22 @@
             return this;
         }
 
-        public IWsl SetPort(int port)
+        public IWsl AddPort(int port)
         {
-            _settings.Ports.Append<string>(port.ToString());
+            _settings.Ports.Add(port.ToString());
+
             return this;
         }
 
-        public IWsl SetPorts(IEnumerable<string> ports)
+        public IWsl AddPort(string port)
         {
-            foreach (var port in ports) {
-                _settings.Ports.Append(port.ToString());
-            }
+            _settings.Ports.Add(port);
+            return this;
+        }
+
+        public IWsl SetPorts(IList<string> ports)
+        {
+            _settings.Ports = ports;
 
             return this;
         }
