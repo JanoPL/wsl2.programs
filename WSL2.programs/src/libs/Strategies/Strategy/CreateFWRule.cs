@@ -1,0 +1,31 @@
+﻿using NetFwTypeLib;
+using Firewall;
+
+namespace Strategies
+{
+    public class CreateFWRule : IStrategies
+    {
+        private IFirewall _firewall;
+        public CreateFWRule(IFirewall firewall)
+        {
+            _firewall = firewall;
+        }
+        public void Execute()
+        {
+            INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(
+                    Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
+
+
+            foreach (var firewallRule in _firewall.Elements) {
+                try {
+                    firewallPolicy.Rules.Add(firewallRule);
+                } catch (UnauthorizedAccessException exception) {
+                    Console.WriteLine($"Cannot add firewall rule, You must run command as Administrator, message: {exception.Message}");
+                    return;
+                }
+
+                Console.WriteLine($"Rule has been created: {firewallRule.Name}");
+            }
+        }
+    }
+}
