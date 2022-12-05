@@ -14,10 +14,12 @@ namespace WSL
             this IServiceCollection services,
             IConfiguration config
         ) {
+            services.AddScoped<IWsl, Wsl>();
+
             return services;
         } 
 
-        public static IServiceCollection AddWslDependency(
+        public static IServiceCollection AddWsl(
             this IServiceCollection services)
         {
             services.AddScoped<IWsl, Wsl>();

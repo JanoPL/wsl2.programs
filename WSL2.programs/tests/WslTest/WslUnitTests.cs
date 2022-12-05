@@ -1,14 +1,12 @@
-using Xunit;
 using WSL;
 using Moq;
-using Castle.Components.DictionaryAdapter.Xml;
 
 namespace WslTest
 {
-    public class WslUnitTest
+    public class WslUnitTests
     {
-        private string ipAddress = "127.0.0.1";
-        private IList<string> ports = new List<string>() { "22", "2222", "80", "443" };
+        private readonly string ipAddress = "127.0.0.1";
+        private readonly IList<string> ports = new List<string>() { "22", "2222", "80", "443" };
 
         private Settings GetSettings()
         {
@@ -57,14 +55,14 @@ namespace WslTest
             Assert.Equal(1, wsl.Settings.Ports.Count);
         }
 
-        [Fact()]
+        [Fact]
         public void WslTest()
         {
             Wsl wsl = new Wsl();
             Assert.IsAssignableFrom<IWsl>(wsl);
         }
 
-        [Fact()]
+        [Fact]
         public void TestSettingsIpAddress()
         {
             Settings settings = GetSettings();
@@ -74,7 +72,7 @@ namespace WslTest
             Assert.Equal(ipAddress, wsl.Settings.IpAddress);
         }
 
-        [Fact()]
+        [Fact]
         public void TestSettingsPort()
         {
             Settings settings = GetSettings();
@@ -83,22 +81,21 @@ namespace WslTest
             Assert.Equal(ports, wsl.Settings.Ports);
         }
 
-        [Fact()]
+        [Fact]
         public void SetIpAddressTest()
         {
-            Settings settings = GetSettings();
-            Wsl wsl = GetWsl(/*settings*/);
+            Wsl wsl = GetWsl();
 
             wsl.SetIpAddress("123.123.123.123");
 
             Assert.Equal("123.123.123.123", wsl.Settings.IpAddress);
         }
 
-        [Fact()]
+        [Fact]
         public void AddPortIntegerTest()
         {
             Wsl wsl = GetWsl();
-            IList<string> testPorts = new List<string>() { "20" };
+            IList<string> testPorts = new List<string> { "20" };
 
             wsl.AddPort(20);
 
@@ -109,14 +106,14 @@ namespace WslTest
         public void AddPortStringTest()
         {
             Wsl wsl = GetWsl();
-            IList<string> testPorts = new List<string>() { "20" };
+            IList<string> testPorts = new List<string> { "20" };
 
             wsl.AddPort("20");
 
             PortsAsserts(wsl, testPorts);
         }
 
-        [Fact()]
+        [Fact]
         public void SetPortsTest()
         {
             Wsl wsl = GetWsl();

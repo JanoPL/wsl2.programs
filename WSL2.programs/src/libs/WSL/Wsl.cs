@@ -24,13 +24,6 @@
             }
         }
 
-        private IWsl SetSettings(Settings settings)
-        {
-            _settings = settings;
-
-            return this;
-        }
-
         public IWsl SetIpAddress(string ipAddress)
         {
             _settings.IpAddress = ipAddress;
