@@ -1,0 +1,2 @@
+# wsl2.programs
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8f170bd5c8c462f800392db75ed4fe1)](https://app.codacy.com/gh/JanoPL/wsl2.programs?utm_source=github.com&utm_medium=referral&utm_content=JanoPL/wsl2.programs&utm_campaign=Badge_Grade_Settings)
