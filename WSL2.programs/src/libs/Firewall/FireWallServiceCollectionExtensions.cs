@@ -12,10 +12,13 @@ namespace Firewall
             IConfiguration config
         )
         {
+            services.AddScoped<IFirewall, Rules>();
+            services.TryAddScoped<IWsl, Wsl>();
+
             return services;
         }
 
-        public static IServiceCollection AddFirewallDependency(
+        public static IServiceCollection AddFirewall(
             this IServiceCollection services
         ) {
             services.AddScoped<IFirewall, Rules>();

@@ -15,14 +15,16 @@ namespace Strategies
             IConfiguration config
         )
         {
+            services.AddScoped<IContext, Context>();
+
             return services;
         }
 
-        public static IServiceCollection AddStrategiesDependency(
+        public static IServiceCollection AddStrategies(
             this IServiceCollection services
         )
         {
-            services.AddScoped<IStrategies>();
+            services.AddScoped<IContext, Context>();
 
             return services;
         }
