@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: WSL2.programs.sln
+      Solution_Name: WSL2.programs/WSL2.programs.sln
       Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
       Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
       Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
@@ -36,9 +36,6 @@ jobs:
 
     - name: Setup VSTest
       uses: darenm/Setup-VSTest@v1
-
-    - name: Navigate to Workspace
-      run: cd $GITHUB_WORKSPACE
 
     - name: Restore Packages
       run: nuget restore ${{ env.Solution_Name }} 
