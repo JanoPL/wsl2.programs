@@ -64,7 +64,7 @@ jobs:
   build:
     name: Build Solution
     runs-on: windows-2022
-    needs: [setups, build ]
+    needs: [ restores ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
@@ -87,7 +87,7 @@ jobs:
   tests: 
     name: Run all Tests
     runs-on: windows-2022
-    needs: [setups, restores, build ]
+    needs: [ build ]
     steps:
       - name: Download a build artifacts
         uses: actions/download-artifact@v3
