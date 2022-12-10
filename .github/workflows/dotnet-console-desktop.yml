@@ -6,28 +6,27 @@ on:
   pull_request:
     branches: [ "github-action" ]
 
+env:
+  Solution_Name: WSL2.programs/WSL2.programs.sln
+  Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
+  Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
+  Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
+
+
 jobs:
-
-  build:
-
+  setups:
     strategy:
       matrix:
         configuration: [Debug, Release]
 
-    runs-on: windows-latest
-
-    env:
-      Solution_Name: WSL2.programs/WSL2.programs.sln
-      Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
-      Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
-      Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
+    runs-on: windows-2022
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-
+    
     - name: Install .NET Core
       uses: microsoft/setup-msbuild@v1.1
 
@@ -37,18 +36,68 @@ jobs:
     - name: Setup VSTest
       uses: darenm/Setup-VSTest@v1
 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: setups
+        path: /WSL2.programs
+
+  restores:
+    name: Restore Nuget solution
+    runs-on: windows-2022
+    needs: [ setups ]
+    steps:
+    - name: Download a setups artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: setups
+
     - name: Restore Packages
       run: nuget restore ${{ env.Solution_Name }} 
 
-    - name: Build Solution
-      run: msbuild.exe $env:Solution_Name /p:platform="Any CPU" /p:configuration=$env.Configurations /p:Platform="Any CPU"
-      env:
-        Configuration: ${{ matrix.configuration }}
-
-    - name: Run Firewall test
-      uses: microsoft/vstest-action@v1.0.0
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-        testAssembly: FirewallTest.dll
-        searchFolder: ./WSL2.programs/tests/FirewallTest/bin/Debug/
-        runInParallel: true
-        
+        name: restores
+        path: /WSL2.programs
+
+  build:
+    name: Build Solution
+    runs-on: windows-2022
+    needs: [setups, build ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+        platform: [ x64 ]
+    steps:
+      - name: Download a restores artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: restores
+
+      - name: Build Solution
+        run: msbuild.exe $env:Solution_Name /p:platform="Any CPU" /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: /WSL2.programs
+
+  tests: 
+    name: Run all Tests
+    runs-on: windows-2022
+    needs: [setups, restores, build ]
+    steps:
+      - name: Download a build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Run Firewall test
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: FirewallTest.dll
+          searchFolder: ./WSL2.programs/tests/FirewallTest/bin/Debug/
+          runInParallel: true
+      
