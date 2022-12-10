@@ -70,6 +70,7 @@ jobs:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
@@ -83,7 +84,7 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: FirewallTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/FirewallTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/net6.0/
+          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/FirewallTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
 
   tests_strategies:
@@ -94,6 +95,7 @@ jobs:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
@@ -107,7 +109,7 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: StrategiesTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/StrategiesTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/net6.0/
+          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/StrategiesTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
 
   tests_wsl:
@@ -118,6 +120,7 @@ jobs:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
@@ -131,6 +134,6 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: WslTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/WslTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/net6.0/
+          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/WslTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
       
