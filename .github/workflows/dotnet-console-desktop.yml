@@ -34,7 +34,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Setup VSTest
-      uses: darenm/Setup-VSTest@v1
+      uses: darenm/Setup-VSTest@v1.2
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -85,7 +85,7 @@ jobs:
           path: ${{ github.workspace }}
 
   tests: 
-    name: Run all Tests
+    name: Run firewall test
     runs-on: windows-2022
     needs: [ build ]
     steps:
