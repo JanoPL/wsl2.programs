@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: setups
-        path: /WSL2.programs
+        path: ${{ github.workspace }}
 
   restores:
     name: Restore Nuget solution
@@ -59,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: restores
-        path: /WSL2.programs
+        path: ${{ github.workspace }}
 
   build:
     name: Build Solution
@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: /WSL2.programs
+          path: ${{ github.workspace }}
 
   tests: 
     name: Run all Tests
