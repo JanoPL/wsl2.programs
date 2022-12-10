@@ -49,7 +49,7 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     - name: Run Firewall test
-      uses: microsoft/vstest-action@master
+      uses: microsoft/vstest-action@v1.0.0
       with:
         testAssembly: FirewallTest.dll
         searchFolder: ./WSL2.programs/tests/FirewallTest/bin/Debug/
