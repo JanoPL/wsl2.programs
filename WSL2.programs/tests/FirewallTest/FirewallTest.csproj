@@ -10,22 +10,11 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>1</VersionMajor>
-      <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-      <Aliases>test_NetFwTypeLib</Aliases>
-    </COMReference>
-  </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="NetFwTypeLib">
-      <Aliases>test_NetFwTypeLib</Aliases>
+    <Reference Include="Interop.NetFwTypeLib">
+      <HintPath>..\..\src\Assemblies\Interop.NetFwTypeLib.dll</HintPath>
+      <Aliases>test_NetFwTypeLib,%(Aliases)</Aliases>
     </Reference>
   </ItemGroup>
 
