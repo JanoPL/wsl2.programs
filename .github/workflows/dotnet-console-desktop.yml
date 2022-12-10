@@ -54,7 +54,7 @@ jobs:
         run: nuget restore ${{ env.Solution_Name }} 
 
       - name: Build Solution
-        run: msbuild $env:Solution_Name /p:platform="Any CPU" /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        run: msbuild $env:Solution_Name /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
