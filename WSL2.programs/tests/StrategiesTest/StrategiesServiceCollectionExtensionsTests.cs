@@ -1,6 +1,6 @@
-﻿using Strategies;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+using Strategies;
 
 namespace StrategiesTest
 {

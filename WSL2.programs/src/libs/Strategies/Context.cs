@@ -27,11 +27,16 @@ namespace Strategies
             _strategies.Clear();
         }
 
-        public void ExecuteStrategies()
+        virtual public void ExecuteStrategies()
         {
             foreach (IStrategies strategy in _strategies) {
                 strategy.Execute();
             }
+        }
+
+        public int Count()
+        {
+            return _strategies.Count;
         }
     }
 }

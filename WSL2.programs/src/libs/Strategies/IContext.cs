@@ -6,5 +6,7 @@
         public void RemoveStrategy(IStrategies strategy);
         public void CleanStrategies();
         public void ExecuteStrategies();
+
+        public int Count();
     }
 }
