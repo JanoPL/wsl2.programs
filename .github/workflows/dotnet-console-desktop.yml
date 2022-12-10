@@ -41,7 +41,7 @@ jobs:
       run: nuget restore ${{ env.Solution_Name }} 
 
     - name: Build Solution
-      run: msbuild.exe $env:Solution_Name /p:platform="Any CPU" /p:configuration=$env.Configurations
+      run: msbuild.exe $env:Solution_Name /p:platform="Any CPU" /p:configuration=$env.Configurations /p:Platform="Any CPU"
       env:
         Configuration: ${{ matrix.configuration }}
 
