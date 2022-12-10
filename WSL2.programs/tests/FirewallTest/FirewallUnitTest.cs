@@ -1,13 +1,13 @@
 extern alias test_NetFwTypeLib;
-using Xunit;
+using System.Runtime.Versioning;
 using Firewall;
+using FluentAssertions;
 using Moq;
 using WSL;
-using test_NetFwTypeLib;
-using FluentAssertions;
 
 namespace FirewallTest
 {
+    [SupportedOSPlatform("windows")]
     public class FirewallUnitTest
     {
         private readonly string ipAddress = "127.0.0.1";
@@ -74,7 +74,7 @@ namespace FirewallTest
 
             // retriev information from Syste.__ComObject
             var rulesType = Microsoft.VisualBasic.Information.TypeName(rules.Elements.First());
-            
+
             rulesType
                 .Should()
                 .BeOneOf(
@@ -107,6 +107,7 @@ namespace FirewallTest
             Assert.True(rules.Elements.Count > 0);
         }
 
+        [Fact]
         public void BuildAllRules()
         {
             var rules = GetRules().BuildOutbound().BuildInbound();

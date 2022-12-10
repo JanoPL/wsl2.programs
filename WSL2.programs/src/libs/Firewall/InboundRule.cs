@@ -14,8 +14,9 @@ namespace Firewall
         public bool Enabled { get; set; } = true;
         public string InterfaceTypes { get; set; } = "All";
 
-        public InboundRule(IWsl wsl2) {
-            _wsl= wsl2;
+        public InboundRule(IWsl wsl2)
+        {
+            _wsl = wsl2;
             LocalPorts = String.Join(',', _wsl.Settings.Ports);
         }
     }

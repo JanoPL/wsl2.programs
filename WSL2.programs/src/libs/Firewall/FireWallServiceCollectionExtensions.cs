@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Runtime.Versioning;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using WSL;
 
 namespace Firewall
 {
+    [SupportedOSPlatform("windows")]
     public static class FireWallServiceCollectionExtensions
     {
         public static IServiceCollection AddFirewall(
@@ -20,11 +22,12 @@ namespace Firewall
 
         public static IServiceCollection AddFirewall(
             this IServiceCollection services
-        ) {
+        )
+        {
             services.AddScoped<IFirewall, Rules>();
             services.TryAddScoped<IWsl, Wsl>();
 
-            return services; 
+            return services;
         }
     }
 }

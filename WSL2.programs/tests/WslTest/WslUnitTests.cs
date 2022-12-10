@@ -1,5 +1,5 @@
-using WSL;
 using Moq;
+using WSL;
 
 namespace WslTest
 {

@@ -1,13 +1,16 @@
-﻿using NetFwTypeLib;
+﻿using System.Runtime.Versioning;
 using Firewall;
+using NetFwTypeLib;
 
 namespace Strategies
 {
+    [SupportedOSPlatform("windows")]
     public class DeleteFWRule : IStrategies
     {
+        private const string ProgID = "HNetCfg.FwPolicy2";
         private IFirewall _rules;
-        public DeleteFWRule(IFirewall firewall) 
-        { 
+        public DeleteFWRule(IFirewall firewall)
+        {
             _rules = firewall.BuildOutbound().BuildOutbound();
         }
 
@@ -15,24 +18,28 @@ namespace Strategies
         {
             Console.WriteLine("Removing firewall rules");
 
-            INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(
-                Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
+            Type? type = Type.GetTypeFromProgID(ProgID);
 
+            if (type != null) {
+                INetFwPolicy2? firewallPolicy = Activator.CreateInstance(type) as INetFwPolicy2;
 
-            foreach (var firewallRule in _rules.Elements) {
-                if (firewallPolicy.Rules.Equals(firewallRule)) {
-                    try {
-                        firewallPolicy.Rules.Remove(firewallRule.Name);
-                    } catch (UnauthorizedAccessException exception) {
-                        Console.WriteLine($"Cannot remove firewall rule, You must run command as Administrator, message: {exception.Message}");
-                        return;
+                if (firewallPolicy != null) {
+                    foreach (var firewallRule in _rules.Elements) {
+                        if (firewallPolicy.Rules.Equals(firewallRule)) {
+                            try {
+                                firewallPolicy.Rules.Remove(firewallRule.Name);
+                            } catch (UnauthorizedAccessException exception) {
+                                Console.WriteLine($"Cannot remove firewall rule, You must run command as Administrator, message: {exception.Message}");
+                                return;
+                            }
+
+                            Console.WriteLine($"Rule has been removed: {firewallRule.Name}");
+                            return;
+                        }
+
+                        Console.WriteLine($"No firewall rule with given name: {firewallRule.Name}");
                     }
-
-                    Console.WriteLine($"Rule has been removed: {firewallRule.Name}");
-                    return;
                 }
-
-                Console.WriteLine($"No firewall rule with given name: {firewallRule.Name}");
             }
         }
     }

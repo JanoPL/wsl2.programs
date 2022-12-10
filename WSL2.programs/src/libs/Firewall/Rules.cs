@@ -1,10 +1,13 @@
-﻿using NetFwTypeLib;
+﻿using System.Runtime.Versioning;
+using NetFwTypeLib;
 using WSL;
 
 namespace Firewall
 {
+    [SupportedOSPlatform("windows")]
     public class Rules : IFirewall
     {
+        private const string ProgID = "HNetCfg.FWRule";
         readonly private IWsl _wsl;
 
         private IList<INetFwRule> _elements = new List<INetFwRule>();
@@ -18,38 +21,50 @@ namespace Firewall
 
         public Rules BuildInbound()
         {
-            INetFwRule firewallRule = (INetFwRule)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
+            Type? type = Type.GetTypeFromProgID(ProgID);
 
-            InboundRule inboundRule = new(_wsl);
+            if (type != null) {
+                INetFwRule? firewallRule = Activator.CreateInstance(type) as INetFwRule;
 
-            firewallRule.Name = inboundRule.Name;
-            firewallRule.Action = inboundRule.Action;
-            firewallRule.Protocol = (int)inboundRule.Protocol;
-            firewallRule.LocalPorts = inboundRule.LocalPorts;
-            firewallRule.Direction = inboundRule.Direction;
-            firewallRule.Enabled = inboundRule.Enabled;
-            firewallRule.InterfaceTypes = inboundRule.InterfaceTypes;
+                if (firewallRule != null) {
+                    InboundRule inboundRule = new(_wsl);
 
-            Elements.Add(firewallRule);
+                    firewallRule.Name = inboundRule.Name;
+                    firewallRule.Action = inboundRule.Action;
+                    firewallRule.Protocol = (int)inboundRule.Protocol;
+                    firewallRule.LocalPorts = inboundRule.LocalPorts;
+                    firewallRule.Direction = inboundRule.Direction;
+                    firewallRule.Enabled = inboundRule.Enabled;
+                    firewallRule.InterfaceTypes = inboundRule.InterfaceTypes;
+
+                    Elements.Add(firewallRule);
+                }
+            }
 
             return this;
         }
 
         public Rules BuildOutbound()
         {
-            INetFwRule firewallRule = (INetFwRule)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
+            var type = Type.GetTypeFromProgID(ProgID);
 
-            OutboundRule outboundRule = new(_wsl);
+            if (type != null) {
+                INetFwRule? firewallRule = Activator.CreateInstance(type) as INetFwRule;
 
-            firewallRule.Name = outboundRule.Name;
-            firewallRule.Action = outboundRule.Action;
-            firewallRule.Protocol = (int)outboundRule.Protocol;
-            firewallRule.LocalPorts = outboundRule.LocalPorts;
-            firewallRule.Direction = outboundRule.Direction;
-            firewallRule.Enabled = outboundRule.Enabled;
-            firewallRule.InterfaceTypes = outboundRule.InterfaceTypes;
+                if (firewallRule != null) {
+                    OutboundRule outboundRule = new(_wsl);
 
-            Elements.Add(firewallRule);
+                    firewallRule.Name = outboundRule.Name;
+                    firewallRule.Action = outboundRule.Action;
+                    firewallRule.Protocol = (int)outboundRule.Protocol;
+                    firewallRule.LocalPorts = outboundRule.LocalPorts;
+                    firewallRule.Direction = outboundRule.Direction;
+                    firewallRule.Enabled = outboundRule.Enabled;
+                    firewallRule.InterfaceTypes = outboundRule.InterfaceTypes;
+
+                    Elements.Add(firewallRule);
+                }
+            }
 
             return this;
         }

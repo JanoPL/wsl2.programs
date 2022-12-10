@@ -29,7 +29,7 @@ namespace Strategies
                 proc.Start();
 
                 while (!proc.StandardOutput.EndOfStream) {
-                    string line = proc.StandardOutput.ReadLine();
+                    string? line = proc.StandardOutput.ReadLine();
 
                     if (string.IsNullOrEmpty(line)) {
                         Console.WriteLine("There is no portproxy information");

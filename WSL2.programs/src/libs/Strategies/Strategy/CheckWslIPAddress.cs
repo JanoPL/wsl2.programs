@@ -16,7 +16,7 @@ namespace Strategies
 
         public void Execute()
         {
-            var proc = new Process {
+            Process proc = new Process {
                 StartInfo = new ProcessStartInfo() {
                     FileName = "wsl.exe",
                     Arguments = "hostname -I",
@@ -31,7 +31,7 @@ namespace Strategies
 
 
             while (!proc.StandardOutput.EndOfStream) {
-                string ipAddress = proc.StandardOutput.ReadLine();
+                string? ipAddress = proc.StandardOutput.ReadLine();
 
                 if (string.IsNullOrEmpty(ipAddress)) {
                     _logger.LogError("WSL2 cannot be found.");

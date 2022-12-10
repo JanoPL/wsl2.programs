@@ -1,16 +1,12 @@
-﻿using Xunit;
-using WSL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Versioning;
+using Firewall;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Firewall;
+using WSL;
 
 namespace FirewallTest
 {
+    [SupportedOSPlatform("windows")]
     public class FirewallServiceCollectionExtensionTest
     {
         private (ServiceCollection, IConfigurationRoot) GetServiceConfiguration()
