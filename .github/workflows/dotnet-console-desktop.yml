@@ -1,0 +1,57 @@
+name: .NET Console Desktop 
+
+on:
+  push:
+    branches: [ "github-action" ]
+  pull_request:
+    branches: [ "github-action" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: WSL2.programs.sln
+      Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
+      Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
+      Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Setup VSTest
+      uses: darenm/Setup-VSTest@v1
+
+    - name: Navigate to Workspace
+      run: cd $GITHUB_WORKSPACE
+
+    - name: Restore Packages
+      run: nuget restore ${{ env.Solution_Name }} 
+
+    - name: Build Solution
+      run: msbuild.exe $env:Solution_Name /p:platform="Any CPU" /p:configuration=$env.Configurations
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    - name: Run Firewall test
+      uses: microsoft/vstest-action@master
+      with:
+        testAssembly: FirewallTest.dll
+        searchFolder: ./WSL2.programs/tests/FirewallTest/bin/Debug/
+        runInParallel: true
+        
