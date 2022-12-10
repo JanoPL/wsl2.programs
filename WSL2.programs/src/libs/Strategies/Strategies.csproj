@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Reference Include="Interop.NetFwTypeLib">
-      <HintPath>..\Firewall\obj\Debug\net6.0\Interop.NetFwTypeLib.dll</HintPath>
+      <HintPath>..\..\Assemblies\Interop.NetFwTypeLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 
