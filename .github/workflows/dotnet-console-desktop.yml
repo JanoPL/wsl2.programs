@@ -84,20 +84,63 @@ jobs:
           name: build
           path: ${{ github.workspace }}
 
-  tests: 
+  test_firewall: 
     name: Run firewall test
     runs-on: windows-2022
     needs: [ build ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
     steps:
       - name: Download a build artifacts
         uses: actions/download-artifact@v3
         with:
           name: build
 
-      - name: Run Firewall test
+      - name: Run test
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: FirewallTest.dll
-          searchFolder: ./WSL2.programs/tests/FirewallTest/bin/Debug/
+          searchFolder: ./WSL2.programs/tests/FirewallTest/bin/${{ matrix.configuration }}/
+          runInParallel: true
+
+  tests_strategies:
+    name: Run Strategies test
+    runs-on: windows-2022
+    needs: [ build ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+    steps:
+      - name: Download a build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Run test
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: StrategiesTest.dll
+          searchFolder: ./WSL2.programs/tests/StrategiesTest/bin/${{ matrix.configuration }}/
+          runInParallel: true
+
+  tests_wsl:
+    name: Run Wsl test
+    runs-on: windows-2022
+    needs: [ build ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+    steps:
+      - name: Download a build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Run test
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: WslTest.dll
+          searchFolder: ./WSL2.programs/tests/WslTest/bin/${{ matrix.configuration }}/
           runInParallel: true
       
