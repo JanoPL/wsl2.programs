@@ -33,29 +33,10 @@ jobs:
         name: setups
         path: ${{ github.workspace }}
 
-  restores:
-    name: Restore Nuget solution
-    runs-on: windows-2022
-    needs: [ checkout ]
-    steps:
-    - name: Download a setups artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: setups
-
-    - name: Restore Packages
-      run: nuget restore ${{ env.Solution_Name }} 
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: restores
-        path: ${{ github.workspace }}
-
   build:
     name: Build Solution
     runs-on: windows-2022
-    needs: [ restores ]
+    needs: [ checkout ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
@@ -67,7 +48,10 @@ jobs:
       - name: Download a restores artifact
         uses: actions/download-artifact@v3
         with:
-          name: restores
+          name: setups
+
+      - name: Restore Packages
+        run: nuget restore ${{ env.Solution_Name }} 
 
       - name: Build Solution
         run: msbuild $env:Solution_Name /p:platform="Any CPU" /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
