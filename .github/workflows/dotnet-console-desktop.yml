@@ -2,9 +2,9 @@ name: .NET Console Desktop
 
 on:
   push:
-    branches: [ "github-action" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "github-action" ]
+    branches: [ "master" ]
 
 env:
   Solution_Name: WSL2.programs/WSL2.programs.sln
