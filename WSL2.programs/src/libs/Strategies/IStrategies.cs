@@ -2,6 +2,6 @@
 {
     public interface IStrategies
     {
-        void Execute();
+        public void Execute();
     }
 }
