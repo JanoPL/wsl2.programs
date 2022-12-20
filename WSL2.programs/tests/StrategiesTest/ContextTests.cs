@@ -95,14 +95,27 @@ namespace StrategiesTest
         }
 
         [Fact]
-        public void ExecuteStrategiesTest()
+        public void ExecuteStrategiesTest1()
         {
             var context = GetMockContext();
             var strategies = GetStrategies();
 
             context.Object.AddStrategy(strategies);
             context.Object.ExecuteStrategies();
-            context.Verify(v => v.ExecuteStrategies());
+            context.Verify(v => v.ExecuteStrategies(), Times.Once());
+        }
+
+        [Fact]
+
+        public void ExecuteStrategiesTest2()
+        {
+            var context = new Context();
+            var strategies = GetStrategies();
+            context.AddStrategy(strategies);
+
+            Assert.True(context.Count() > 0);
+
+            context.ExecuteStrategies();
         }
 
         [Fact]
