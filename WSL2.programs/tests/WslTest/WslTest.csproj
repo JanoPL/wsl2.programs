@@ -8,6 +8,8 @@
     <IsPackable>false</IsPackable>
 
     <AnalysisLevel>6.0</AnalysisLevel>
+
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
