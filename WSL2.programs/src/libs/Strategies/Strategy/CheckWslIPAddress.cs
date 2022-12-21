@@ -7,8 +7,8 @@ namespace Strategies
     public class CheckWslIPAddress : IStrategies
     {
         readonly private IWsl _wsl;
-        readonly private ILogger<CheckWslIPAddress> _logger;
-        public CheckWslIPAddress(ILogger<CheckWslIPAddress> logger, IWsl wsl)
+        readonly private ILogger _logger;
+        public CheckWslIPAddress(ILogger logger, IWsl wsl)
         {
             _logger = logger;
             _wsl = wsl;
@@ -16,7 +16,7 @@ namespace Strategies
 
         public void Execute()
         {
-            Process proc = new Process {
+            Process proc = new() {
                 StartInfo = new ProcessStartInfo() {
                     FileName = "wsl.exe",
                     Arguments = "hostname -I",
@@ -40,7 +40,7 @@ namespace Strategies
 
                 _wsl.SetIpAddress(ipAddress);
 
-                _logger.LogInformation($"Ip address: {ipAddress}");
+                _logger.LogInformation($"Ip address: [0]", ipAddress);
             }
         }
     }

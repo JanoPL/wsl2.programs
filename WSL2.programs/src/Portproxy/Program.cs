@@ -1,10 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Runtime.Versioning;
+using Firewall;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Strategies;
+using WSL;
+using CommandLine;
+using Microsoft.Extensions.Logging;
 
 namespace Portproxy
 {
+    [SupportedOSPlatform("windows")]
     internal class Program
     {
         static void Main(string[] args)
@@ -18,7 +25,9 @@ namespace Portproxy
 
             var host = BuildHost(args).Build();
 
-            Application app = host.Services.GetRequiredService<Application>();
+            IApp app = host.Services.GetRequiredService<IApp>();
+
+            app.Run(args);
         }
 
         private static IHostBuilder BuildHost(string[] args) =>
@@ -28,8 +37,11 @@ namespace Portproxy
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            services.AddSingleton<Application, Application>();
+            services.AddSingleton<IApp, App>();
             services.AddSingleton<IAppConfig, AppConfig>();
+            services.AddSingleton<IContext, Context>();
+            services.AddSingleton<IWsl, Wsl>();
+            services.AddSingleton<IFirewall, Rules>();
         }
     }
 }
