@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Versioning;
 using Firewall;
+using HelperTest;
 using Moq;
 using Strategies;
-using StrategiesTest.Helpers;
 
 namespace StrategiesTest.Strategies
 {
@@ -22,9 +22,9 @@ namespace StrategiesTest.Strategies
         [Fact]
         public void ExecuteTest()
         {
-            FirewallHelper firewallHelper = new FirewallHelper();
+            FirewallHelper firewallHelper = new();
 
-            CreateFWRule createFWRule = new CreateFWRule(firewallHelper.GetRules());
+            CreateFWRule createFWRule = new(firewallHelper.GetRules());
 
             try {
                 createFWRule.Execute();

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\libs\Strategies\Strategies.csproj" />
+    <ProjectReference Include="..\HelperTest\HelperTest.csproj" />
   </ItemGroup>
 
 </Project>

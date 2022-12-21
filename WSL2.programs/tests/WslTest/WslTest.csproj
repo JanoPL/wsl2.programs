@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\libs\WSL\WSL.csproj" />
+    <ProjectReference Include="..\HelperTest\HelperTest.csproj" />
   </ItemGroup>
 
 </Project>

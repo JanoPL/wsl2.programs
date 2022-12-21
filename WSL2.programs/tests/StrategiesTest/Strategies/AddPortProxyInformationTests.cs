@@ -1,6 +1,6 @@
-﻿using Moq;
+﻿using HelperTest;
+using Moq;
 using Strategies;
-using StrategiesTest.Helpers;
 using WSL;
 
 namespace StrategiesTest.Strategies

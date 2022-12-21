@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Versioning;
 using Firewall;
+using HelperTest;
 using Moq;
 using Strategies;
-using StrategiesTest.Helpers;
 
 namespace StrategiesTest.Strategies
 {
@@ -12,7 +12,7 @@ namespace StrategiesTest.Strategies
         [Fact]
         public void DeleteFWRuleTest()
         {
-            FirewallHelper firewallHelper = new FirewallHelper();
+            FirewallHelper firewallHelper = new();
 
             var deleteFwRule = new DeleteFWRule(firewallHelper.GetRules());
 
@@ -22,9 +22,9 @@ namespace StrategiesTest.Strategies
         [Fact]
         public void ExecuteTest()
         {
-            FirewallHelper firewallHelper = new FirewallHelper();
+            FirewallHelper firewallHelper = new();
 
-            DeleteFWRule createFWRule = new DeleteFWRule(firewallHelper.GetRules());
+            DeleteFWRule createFWRule = new(firewallHelper.GetRules());
 
             try {
                 createFWRule.Execute();

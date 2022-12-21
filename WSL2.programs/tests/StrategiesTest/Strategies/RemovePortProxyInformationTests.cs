@@ -1,5 +1,5 @@
-﻿using Strategies;
-using StrategiesTest.Helpers;
+﻿using HelperTest;
+using Strategies;
 
 namespace StrategiesTest.Strategies
 {

@@ -41,6 +41,8 @@ namespace StrategiesTest.Strategies
             proc.StartInfo = procStartInfo;
             var start = proc.Start();
 
+            Assert.True(start);
+
             var line = mockProc.Object.StandardOutput.ReadLine();
 
             Assert.Equal(string.Empty, line);

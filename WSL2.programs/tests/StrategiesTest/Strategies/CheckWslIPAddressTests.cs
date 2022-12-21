@@ -1,8 +1,8 @@
 ﻿
+using HelperTest;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Strategies;
-using StrategiesTest.Helpers;
 
 namespace StrategiesTest.Strategies
 {

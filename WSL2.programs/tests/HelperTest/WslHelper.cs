@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
-using Firewall;
-using Moq;
+﻿using Moq;
 using WSL;
+using Xunit;
 
-namespace StrategiesTest.Helpers
+namespace HelperTest
 {
-    [SupportedOSPlatform("windows")]
-    internal class FirewallHelper
+    public class WslHelper
     {
-        private readonly string ipAddress = "127.0.0.1";
-        private readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
+        public readonly string ipAddress = "127.0.0.1";
+        public readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
+
         public Settings GetSettings()
         {
-            Mock<Settings> mockSettings = new();
+            Mock<Settings> mockSettings = new Mock<Settings>();
             mockSettings.SetupAllProperties();
             mockSettings.Object.IpAddress = ipAddress;
             mockSettings.Object.Ports = ports;
@@ -39,7 +33,7 @@ namespace StrategiesTest.Helpers
         {
             Assert.NotNull(settings);
 
-            Mock<IWsl> mockWsl = new();
+            Mock<IWsl> mockWsl = new Mock<IWsl>();
             mockWsl.SetupAllProperties();
             mockWsl.Object.SetIpAddress(ipAddress);
             mockWsl.SetupGet(mObj => mObj.Settings).Returns(settings);
@@ -49,14 +43,11 @@ namespace StrategiesTest.Helpers
             return wsl;
         }
 
-        public Rules GetRules()
+        public Wsl GetWsl()
         {
-            var settings = GetSettings();
-            var mockWsl = GetIWsl(settings);
+            Wsl wsl = new();
 
-            Rules rules = new(mockWsl);
-
-            return rules;
+            return wsl;
         }
     }
 }
