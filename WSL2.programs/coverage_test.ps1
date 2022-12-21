@@ -24,5 +24,5 @@ dotnet test --collect:"XPlat Code Coverage" --no-build
 if (Get-Command reportgenerator.exe -ErrorAction SilentlyContinue) {
     reportgenerator.exe -reports:tests\*\TestResults\*\coverage.cobertura.xml -targetdir:coveragereport    
 } else {
-    Write-Host "Report generator does'n exist, please install via 'dotnet tool install -g dotnet-reportgenerator-globaltool' "
+    Write-Output "Report generator does'n exist, please install via 'dotnet tool install -g dotnet-reportgenerator-globaltool' "
 }
