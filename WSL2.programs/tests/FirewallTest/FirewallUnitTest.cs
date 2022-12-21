@@ -14,7 +14,7 @@ namespace FirewallTest
         private readonly IList<string> ports = new List<string>() { "22", "2222", "80", "443" };
         private Settings GetSettings()
         {
-            Mock<Settings> mockSettings = new Mock<Settings>();
+            Mock<Settings> mockSettings = new();
             mockSettings.SetupAllProperties();
             mockSettings.Object.IpAddress = ipAddress;
             mockSettings.Object.Ports = ports;
@@ -36,7 +36,7 @@ namespace FirewallTest
         {
             Assert.NotNull(settings);
 
-            Mock<IWsl> mockWsl = new Mock<IWsl>();
+            Mock<IWsl> mockWsl = new();
             mockWsl.SetupAllProperties();
             mockWsl.Object.SetIpAddress(ipAddress);
             mockWsl.SetupGet(mObj => mObj.Settings).Returns(settings);
@@ -51,7 +51,7 @@ namespace FirewallTest
             var settings = GetSettings();
             var mockWsl = GetIWsl(settings);
 
-            Rules rules = new Rules(mockWsl);
+            Rules rules = new(mockWsl);
 
             return rules;
         }
