@@ -26,7 +26,7 @@ namespace WslTest
 
             IWsl wsl = wslHelper.GetIWsl(settings);
 
-            Assert.Equal(wslHelper.ipAddress, wsl.Settings.IpAddress);
+            Assert.Equal(wslHelper.GetIpAddress(), wsl.Settings.IpAddress);
         }
 
         [Fact]
@@ -36,14 +36,14 @@ namespace WslTest
             Settings settings = wslHelper.GetSettings();
             IWsl wsl = wslHelper.GetIWsl(settings);
 
-            Assert.Equal(wslHelper.ports, wsl.Settings.Ports);
+            Assert.Equal(wslHelper.GetPorts(), wsl.Settings.Ports);
         }
 
         [Fact]
         public void SetIpAddressTest()
         {
             WslHelper wslHelper = new();
-            Wsl wsl = wslHelper.GetWsl();
+            Wsl wsl = WslHelper.GetWsl();
 
             wsl.SetIpAddress("123.123.123.123");
 
@@ -54,7 +54,7 @@ namespace WslTest
         public void AddPortIntegerTest()
         {
              WslHelper wslHelper = new();
-            Wsl wsl = wslHelper.GetWsl();
+            Wsl wsl = WslHelper.GetWsl();
             IList<string> testPorts = new List<string> { "20" };
 
             wsl.AddPort(20);
@@ -66,7 +66,7 @@ namespace WslTest
         public void AddPortStringTest()
         {
              WslHelper wslHelper = new();
-            Wsl wsl = wslHelper.GetWsl();
+            Wsl wsl = WslHelper.GetWsl();
             IList<string> testPorts = new List<string> { "20" };
 
             wsl.AddPort("20");
@@ -78,11 +78,11 @@ namespace WslTest
         public void SetPortsTest()
         {
              WslHelper wslHelper = new();
-            Wsl wsl = wslHelper.GetWsl();
+            Wsl wsl = WslHelper.GetWsl();
 
-            wsl.SetPorts(wslHelper.ports);
+            wsl.SetPorts(wslHelper.GetPorts());
 
-            Assert.Equal(wslHelper.ports, wsl.Settings.Ports);
+            Assert.Equal(wslHelper.GetPorts(), wsl.Settings.Ports);
         }
     }
 }

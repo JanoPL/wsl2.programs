@@ -6,12 +6,22 @@ namespace HelperTest
 {
     public class WslHelper
     {
-        public readonly string ipAddress = "127.0.0.1";
-        public readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
+        private readonly string ipAddress = "127.0.0.1";
+        private readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
+
+        public string GetIpAddress()
+        {
+            return ipAddress;
+        }
+
+        public IList<string> GetPorts()
+        {
+            return ports;
+        }
 
         public Settings GetSettings()
         {
-            Mock<Settings> mockSettings = new Mock<Settings>();
+            Mock<Settings> mockSettings = new();
             mockSettings.SetupAllProperties();
             mockSettings.Object.IpAddress = ipAddress;
             mockSettings.Object.Ports = ports;
@@ -33,7 +43,7 @@ namespace HelperTest
         {
             Assert.NotNull(settings);
 
-            Mock<IWsl> mockWsl = new Mock<IWsl>();
+            Mock<IWsl> mockWsl = new();
             mockWsl.SetupAllProperties();
             mockWsl.Object.SetIpAddress(ipAddress);
             mockWsl.SetupGet(mObj => mObj.Settings).Returns(settings);
@@ -43,7 +53,7 @@ namespace HelperTest
             return wsl;
         }
 
-        public Wsl GetWsl()
+        public static Wsl GetWsl()
         {
             Wsl wsl = new();
 
