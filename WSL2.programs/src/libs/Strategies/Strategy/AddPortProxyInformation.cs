@@ -5,20 +5,21 @@ namespace Strategies
 {
     public class AddPortProxyInformation : IStrategies
     {
-        private readonly IWsl _wsl;
+        private IWsl Wsl { get; set; }
         public AddPortProxyInformation(IWsl wsl)
         {
-            _wsl = wsl;
+            Wsl = wsl;
         }
+        
         public void Execute()
         {
             string address = "0.0.0.0";
 
-            foreach (var port in _wsl.Settings.Ports) {
+            foreach (var port in Wsl.Settings.Ports) {
                 var proc = new Process {
                     StartInfo = new ProcessStartInfo {
                         FileName = "netsh.exe",
-                        Arguments = $"interface portproxy add v4tov4 netsh interface portproxy add v4tov4 listenaddress={address} listenport={_wsl.Settings.Ports} connectaddress={_wsl.Settings.IpAddress} connectport={port}",
+                        Arguments = $"interface portproxy add v4tov4 netsh interface portproxy add v4tov4 listenaddress={address} listenport={Wsl.Settings.Ports} connectaddress={Wsl.Settings.IpAddress} connectport={port}",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
