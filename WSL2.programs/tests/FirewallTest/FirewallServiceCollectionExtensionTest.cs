@@ -17,7 +17,7 @@ namespace FirewallTest
             return (services, configuration);
         }
 
-        [Fact()]
+        [Fact]
         public void AddFirewallTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
@@ -38,7 +38,7 @@ namespace FirewallTest
             );
         }
 
-        [Fact()]
+        [Fact]
         public void AddFirewallTest1()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();

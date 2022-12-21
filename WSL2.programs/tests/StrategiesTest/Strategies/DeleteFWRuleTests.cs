@@ -9,7 +9,7 @@ namespace StrategiesTest.Strategies
     [SupportedOSPlatform("windows")]
     public class DeleteFWRuleTests
     {
-        [Fact()]
+        [Fact]
         public void DeleteFWRuleTest()
         {
             FirewallHelper firewallHelper = new FirewallHelper();
@@ -19,7 +19,7 @@ namespace StrategiesTest.Strategies
             Assert.IsAssignableFrom<IStrategies>(deleteFwRule);
         }
 
-        [Fact()]
+        [Fact]
         public void ExecuteTest()
         {
             FirewallHelper firewallHelper = new FirewallHelper();

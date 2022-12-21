@@ -11,7 +11,7 @@ namespace FirewallTest
     public class FirewallUnitTest
     {
         private readonly string ipAddress = "127.0.0.1";
-        private readonly IList<string> ports = new List<string>() { "22", "2222", "80", "443" };
+        private readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
         private Settings GetSettings()
         {
             Mock<Settings> mockSettings = new();
@@ -56,7 +56,7 @@ namespace FirewallTest
             return rules;
         }
 
-        [Fact()]
+        [Fact]
         public void RulesTest()
         {
             var rules = GetRules();
@@ -65,7 +65,7 @@ namespace FirewallTest
             Assert.NotNull(rules.Elements);
         }
 
-        [Fact()]
+        [Fact]
         public void BuildInboundTest()
         {
             var rules = GetRules().BuildInbound();
@@ -86,7 +86,7 @@ namespace FirewallTest
             Assert.True(rules.Elements.Count > 0);
         }
 
-        [Fact()]
+        [Fact]
         public void BuildOutboundTest()
         {
             var rules = GetRules().BuildOutbound();

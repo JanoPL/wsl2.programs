@@ -46,34 +46,6 @@ namespace StrategiesTest.Strategies
             Assert.Equal(string.Empty, line);
         }
 
-        //[Fact]
-        //public void ExecuteTestWithNonEmptyOutput()
-        //{
-        //    (ProcessStartInfo procStartInfo, Mock<Process> mockProc, Mock<StreamReader> mockStreamReader) = GetMocks();
-
-        //    string output = "\r\nListen on ipv4:             Connect to ipv4:\r\n\r\nAddress         Port        Address         Port\r\n--------------- ----------  --------------- ----------\r\n0.0.0.0         22          172.26.162.128  22\r\n0.0.0.0         80          172.26.162.128  80\r\n0.0.0.0         443         172.26.162.128  443\r\n0.0.0.0         8080        172.26.162.128  8080\r\n\r\n";
-
-        //    mockStreamReader.Setup(m => m.ReadToEnd()).Returns(output);
-
-        //    var proc = mockProc.Object;
-        //    proc.StartInfo = procStartInfo;
-        //    var start = proc.Start();
-
-        //    Assert.True(start);
-
-        //    StringBuilder read = new StringBuilder();
-
-        //    while (!proc.StandardOutput.EndOfStream) {
-        //        string? line = proc.StandardOutput.ReadLine();
-
-        //        if (string.IsNullOrEmpty(line)) {
-        //            read.AppendLine(line);
-        //        }
-        //    }
-
-        //    Assert.Equal(output, read.ToString());
-        //}
-
         [Fact(DisplayName = "Execute List Strategies")]
         public void ExecuteListStrategies()
         {

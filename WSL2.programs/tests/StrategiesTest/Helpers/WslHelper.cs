@@ -6,7 +6,7 @@ namespace StrategiesTest.Helpers
     internal class WslHelper
     {
         private readonly string ipAddress = "127.0.0.1";
-        private readonly IList<string> ports = new List<string>() { "22", "2222", "80", "443" };
+        private readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
 
         public Settings GetSettings()
         {

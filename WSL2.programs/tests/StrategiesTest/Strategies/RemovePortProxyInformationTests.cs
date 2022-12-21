@@ -5,7 +5,7 @@ namespace StrategiesTest.Strategies
 {
     public class RemovePortProxyInformationTests
     {
-        [Fact()]
+        [Fact]
         public void RemovePortProxyInformationTest()
         {
             var wsl = new WslHelper();
@@ -15,7 +15,7 @@ namespace StrategiesTest.Strategies
             Assert.IsAssignableFrom<IStrategies>(proxyInformation);
         }
 
-        [Fact()]
+        [Fact]
         public void ExecuteTest()
         {
             var wsl = new WslHelper();

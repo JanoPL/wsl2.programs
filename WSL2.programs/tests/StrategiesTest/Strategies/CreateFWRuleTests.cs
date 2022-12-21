@@ -9,7 +9,7 @@ namespace StrategiesTest.Strategies
     [SupportedOSPlatform("windows")]
     public class CreateFWRuleTests
     {
-        [Fact()]
+        [Fact]
         public void CreateFWRuleTest()
         {
             Mock<IFirewall> mock = new();
@@ -19,7 +19,7 @@ namespace StrategiesTest.Strategies
             Assert.IsAssignableFrom<IStrategies>(createFwRule);
         }
 
-        [Fact()]
+        [Fact]
         public void ExecuteTest()
         {
             FirewallHelper firewallHelper = new FirewallHelper();
