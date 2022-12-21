@@ -42,7 +42,6 @@ namespace WslTest
         [Fact]
         public void SetIpAddressTest()
         {
-            WslHelper wslHelper = new();
             Wsl wsl = WslHelper.GetWsl();
 
             wsl.SetIpAddress("123.123.123.123");
@@ -53,7 +52,6 @@ namespace WslTest
         [Fact]
         public void AddPortIntegerTest()
         {
-             WslHelper wslHelper = new();
             Wsl wsl = WslHelper.GetWsl();
             IList<string> testPorts = new List<string> { "20" };
 
@@ -65,7 +63,6 @@ namespace WslTest
         [Fact]
         public void AddPortStringTest()
         {
-             WslHelper wslHelper = new();
             Wsl wsl = WslHelper.GetWsl();
             IList<string> testPorts = new List<string> { "20" };
 
@@ -77,7 +74,7 @@ namespace WslTest
         [Fact]
         public void SetPortsTest()
         {
-             WslHelper wslHelper = new();
+            WslHelper wslHelper = new();
             Wsl wsl = WslHelper.GetWsl();
 
             wsl.SetPorts(wslHelper.GetPorts());
