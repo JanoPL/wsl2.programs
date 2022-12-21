@@ -17,9 +17,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
-
     runs-on: windows-2022
-
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -31,6 +29,38 @@ jobs:
       with:
         name: setups
         path: ${{ github.workspace }}
+  
+  build_dotnet: 
+    name: Build Solution with dotnet
+    runs-on: windows-2022
+    needs: [ checkout ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Download a restores artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: setups
+
+      - name: Restore Packages
+        run: nuget restore ${{ env.Solution_Name }} 
+
+      - name: dotnet build
+        run: dotnet build ${{ github.workspace }}\WSL2.programs.sln -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build_dotnet
+          path: ${{ github.workspace }}
 
   build:
     name: Build Solution
@@ -53,7 +83,7 @@ jobs:
         run: nuget restore ${{ env.Solution_Name }} 
 
       - name: Build Solution
-        run: msbuild $env:Solution_Name /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        run: msbuild $env:Solution_Name /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} -m
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -61,7 +91,28 @@ jobs:
           name: build
           path: ${{ github.workspace }}
 
-  test_firewall: 
+  test_firewall_dotnet:
+    name: Run firewall test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Download a restores artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build_dotnet
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}/$env:Firewall_Test_Project_Path -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+
+  test_firewall:
     name: Run firewall test
     runs-on: windows-2022
     needs: [ build ]
@@ -85,6 +136,13 @@ jobs:
           testAssembly: FirewallTest.dll
           searchFolder: ${{ github.workspace }}/WSL2.programs/tests/FirewallTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
+          otherConsoleOptions: '--collect:"Code Coverage;Format=Xml;CoverageFileName=coverage.xml" /ResultsDirectory:./coverage'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vstest-firewall
+          path: ${{ github.workspace }}
 
   tests_strategies:
     name: Run Strategies test
@@ -110,6 +168,7 @@ jobs:
           testAssembly: StrategiesTest.dll
           searchFolder: ${{ github.workspace }}/WSL2.programs/tests/StrategiesTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
+          codeCoverageEnabled: true
 
   tests_wsl:
     name: Run Wsl test
@@ -135,4 +194,5 @@ jobs:
           testAssembly: WslTest.dll
           searchFolder: ${{ github.workspace }}/WSL2.programs/tests/WslTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
+          codeCoverageEnabled: true
       
