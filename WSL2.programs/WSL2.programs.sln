@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirewallTest", "tests\Firew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StrategiesTest", "tests\StrategiesTest\StrategiesTest.csproj", "{73137EA5-87CF-4252-9237-7BE8750D7EFB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelperTest", "tests\HelperTest\HelperTest.csproj", "{A2437028-39B8-445A-B5A8-4DB69EB76BF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,14 @@ Global
 		{73137EA5-87CF-4252-9237-7BE8750D7EFB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73137EA5-87CF-4252-9237-7BE8750D7EFB}.Release|x64.ActiveCfg = Release|x64
 		{73137EA5-87CF-4252-9237-7BE8750D7EFB}.Release|x64.Build.0 = Release|x64
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Debug|Any CPU.Build.0 = Debug|x64
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +110,7 @@ Global
 		{D4680A84-D6D3-405D-8D93-A576C0E79210} = {13490886-B7E4-4EDC-B4A2-670E9050FA9C}
 		{5D54A1E0-69EA-414D-B5B9-0DD9BA21FD1D} = {13490886-B7E4-4EDC-B4A2-670E9050FA9C}
 		{73137EA5-87CF-4252-9237-7BE8750D7EFB} = {13490886-B7E4-4EDC-B4A2-670E9050FA9C}
+		{A2437028-39B8-445A-B5A8-4DB69EB76BF0} = {13490886-B7E4-4EDC-B4A2-670E9050FA9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35632F29-704B-453A-B2CE-05FBCA1B9652}

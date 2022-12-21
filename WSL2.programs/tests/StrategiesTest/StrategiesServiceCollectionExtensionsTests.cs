@@ -14,7 +14,7 @@ namespace StrategiesTest
             return (services, configuration);
         }
 
-        [Fact()]
+        [Fact]
         public void AddStrategiesTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
@@ -31,7 +31,7 @@ namespace StrategiesTest
             );
         }
 
-        [Fact()]
+        [Fact]
         public void AddStrategiesDependencyTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();

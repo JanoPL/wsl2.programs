@@ -14,7 +14,7 @@ namespace WslTest
             return (services, configuration);
         }
 
-        [Fact()]
+        [Fact]
         public void AddWslTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
@@ -31,7 +31,7 @@ namespace WslTest
             );
         }
 
-        [Fact()]
+        [Fact]
         public void AddWslTest1()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
