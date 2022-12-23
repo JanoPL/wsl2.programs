@@ -1,9 +1,17 @@
 ﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Strategies
 {
     public class List : IStrategies
     {
+        private readonly ILogger _logger;
+
+        public List(ILogger logger) 
+        {
+            _logger = logger;
+        }
+
         public void Execute()
         {
             var proc = new Process() {
@@ -22,12 +30,19 @@ namespace Strategies
             while (!proc.StandardOutput.EndOfStream) {
                 string? line = proc.StandardOutput.ReadLine();
 
-                if (string.IsNullOrEmpty(line)) {
-                    Console.WriteLine("There is no portproxy information");
+                if (line == null) {
+                    proc.WaitForExit();
                     return;
                 }
 
-                Console.WriteLine(line);
+                if (string.IsNullOrEmpty(line)) {
+                    _logger.LogInformation("There is no portproxy information");
+                    return;
+                }
+
+                if (line != null) {
+                    _logger.LogInformation("{line}", line);
+                }
             }
         }
     }

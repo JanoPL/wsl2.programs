@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using Firewall;
+using Microsoft.Extensions.Logging;
 using NetFwTypeLib;
 
 namespace Strategies
@@ -8,10 +9,13 @@ namespace Strategies
     public class DeleteFWRule : IStrategies
     {
         private const string ProgID = "HNetCfg.FwPolicy2";
-        private IFirewall _rules;
-        public DeleteFWRule(IFirewall firewall)
+        private readonly IFirewall _rules;
+        private readonly ILogger _logger;
+
+        public DeleteFWRule(IFirewall firewall, ILogger logger)
         {
             _rules = firewall.BuildOutbound().BuildOutbound();
+            _logger = logger;
         }
 
         public void Execute()
@@ -29,15 +33,15 @@ namespace Strategies
                             try {
                                 firewallPolicy.Rules.Remove(firewallRule.Name);
                             } catch (UnauthorizedAccessException exception) {
-                                Console.WriteLine($"Cannot remove firewall rule, You must run command as Administrator, message: {exception.Message}");
+                                _logger.LogError("Cannot remove firewall rule, You must run command as Administrator, message: {message}", exception.Message);
                                 return;
                             }
 
-                            Console.WriteLine($"Rule has been removed: {firewallRule.Name}");
+                            _logger.LogInformation("Rule has been removed: {name}", firewallRule.Name);
                             return;
                         }
 
-                        Console.WriteLine($"No firewall rule with given name: {firewallRule.Name}");
+                        _logger.LogInformation("No firewall rule with given name: {name}", firewallRule.Name);
                     }
                 }
             }

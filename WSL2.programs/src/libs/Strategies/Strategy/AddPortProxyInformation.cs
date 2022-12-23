@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using WSL;
 
 namespace Strategies
@@ -6,9 +7,13 @@ namespace Strategies
     public class AddPortProxyInformation : IStrategies
     {
         private IWsl Wsl { get; set; }
-        public AddPortProxyInformation(IWsl wsl)
+
+        private readonly ILogger _logger;
+
+        public AddPortProxyInformation(IWsl wsl, ILogger logger)
         {
             Wsl = wsl;
+            _logger = logger;
         }
         
         public void Execute()
@@ -33,11 +38,11 @@ namespace Strategies
                     string? line = proc.StandardOutput.ReadLine();
 
                     if (string.IsNullOrEmpty(line)) {
-                        Console.WriteLine("There is no portproxy information");
+                        _logger.LogInformation("There is no portproxy information");
                         return;
                     }
 
-                    Console.WriteLine(line);
+                    _logger.LogInformation("{line}", line);
                 }
             }
         }

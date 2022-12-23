@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using Firewall;
+using Microsoft.Extensions.Logging;
 using NetFwTypeLib;
 
 namespace Strategies
@@ -9,10 +10,14 @@ namespace Strategies
     {
         private const string ProgID = "HNetCfg.FwPolicy2";
         private readonly IFirewall _firewall;
-        public CreateFWRule(IFirewall firewall)
+        private readonly ILogger _logger;
+
+        public CreateFWRule(IFirewall firewall, ILogger logger)
         {
             _firewall = firewall;
+            _logger = logger;
         }
+
         public void Execute()
         {
             Type? type = Type.GetTypeFromProgID(ProgID);
@@ -22,11 +27,11 @@ namespace Strategies
                         try {
                             firewallPolicy.Rules.Add(firewallRule);
                         } catch (UnauthorizedAccessException exception) {
-                            Console.WriteLine($"Cannot add firewall rule, You must run command as Administrator, message: {exception.Message}");
+                            _logger.LogError("Cannot add firewall rule, You must run command as Administrator, message: {message}", exception.Message);
                             return;
                         }
 
-                        Console.WriteLine($"Rule has been created: {firewallRule.Name}");
+                        _logger.LogInformation("Rule has been created: {name}", firewallRule.Name);
                     }
                 }
             }
