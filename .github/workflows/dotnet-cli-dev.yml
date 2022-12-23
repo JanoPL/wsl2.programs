@@ -1,4 +1,4 @@
-name: .NET Console Desktop Developing
+name: .NET Console Desktop Developing with dotnet-cli
 
 on:
   push:
@@ -6,17 +6,17 @@ on:
       - master
 
 env:
-  Solution_Name_Portproxy: programs/portproxy.sln
-  Firewall_Test_Project_Path: programs/tests/FireWallTest/FirewallTest.csproj
-  Firewall_Test_Project_dir: programs/tests/FireWallTest
-  Strategies_Test_Project_Path: programs/tests/StrategiesTest/StrategiesTest.csproj
-  Strategies_Test_Project_dir: programs/tests/StrategiesTest
-  Wsl_Test_Project_Path: programs/tests/WslTest/WslTest.csproj
-  Wsl_Test_Project_dir: programs/tests/WslTest
+  Solution_Name_Portproxy: programs\portproxy.sln
+  Firewall_Test_Project_Path: programs\tests\FireWallTest\FirewallTest.csproj
+  Firewall_Test_Project_dir: programs\tests\FireWallTest
+  Strategies_Test_Project_Path: programs\tests\StrategiesTest\StrategiesTest.csproj
+  Strategies_Test_Project_dir: programs\tests\StrategiesTest
+  Wsl_Test_Project_Path: programs\tests\WslTest\WslTest.csproj
+  Wsl_Test_Project_dir: programs\tests\WslTest
   Cache_Workplace_Key: ${{ github.workflow }}-workspace
 
 jobs:
-  checkout:
+  checkout_dotnet:
     strategy:
       matrix:
         configuration: [ Debug, Release ]
@@ -24,21 +24,21 @@ jobs:
         dotnet_version: [ net6.0 ]
     runs-on: windows-2022
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: store workspace cache
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/*
-        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+      - name: store workspace cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
-  restore: 
+  restore_dotnet: 
     name: Restore packages
     runs-on: windows-2022
-    needs: [ checkout ]
+    needs: [ checkout_dotnet ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
@@ -48,7 +48,7 @@ jobs:
       - name: restore cache workspace 
         uses: actions/cache@v3
         with: 
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
@@ -62,32 +62,28 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
       - name: store workspace cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          
-
-  build:
-    name: Build Solution
+  
+  build_dotnet: 
+    name: Build Solution with dotnet
     runs-on: windows-2022
-    needs: [ restore ]
+    needs: [ restore_dotnet ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.1.3
-
       - name: restore cache workspace 
         uses: actions/cache@v3
         with: 
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
@@ -100,99 +96,118 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: Restore Packages
-        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
 
-      - name: Build Solution
-        run: msbuild ${{ env.Solution_Name_Portproxy }} /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} -m
+      - name: dotnet build
+        run: dotnet build ${{ github.workspace }}\${{ env.Solution_Name_Portproxy }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --no-restore
 
       - name: store workspace cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          
-
-  test_firewall:
-    name: Run firewall test
+   
+  test_firewall_dotnet:
+    name: Run firewall test dotnet
     runs-on: windows-2022
-    needs: [ build ]
+    needs: [ build_dotnet ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
-      - name: Setup VSTest
-        uses: darenm/Setup-VSTest@v1.2
-
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
       - name: restore cache workspace 
         uses: actions/cache@v3
         with: 
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
-      - name: Run test
-        uses: microsoft/vstest-action@v1.0.0
+      - name: restore cache packages
+        uses: actions/cache@v3
         with:
-          testAssembly: FirewallTest.dll
-          searchFolder: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
-          runInParallel: true          
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-  tests_strategies:
-    name: Run Strategies test
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+  
+  test_strategies_dotnet:
+    name: Run strategies test dotnet
     runs-on: windows-2022
-    needs: [ build ]
+    needs: [ build_dotnet ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
-      - name: Setup VSTest
-        uses: darenm/Setup-VSTest@v1.2
-
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
       - name: restore cache workspace 
         uses: actions/cache@v3
         with: 
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
-      - name: Run test
-        uses: microsoft/vstest-action@v1.0.0
+      - name: restore cache packages
+        uses: actions/cache@v3
         with:
-          testAssembly: StrategiesTest.dll
-          searchFolder: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
-          runInParallel: true
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-  tests_wsl:
-    name: Run Wsl test
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Strategies_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+  
+  test_wsl_dotnet:
+    name: Run Wsl test dotnet
     runs-on: windows-2022
-    needs: [ build ]
+    needs: [ build_dotnet ]
     strategy:
       matrix:
         configuration: [ Debug, Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
-      - name: Setup VSTest
-        uses: darenm/Setup-VSTest@v1.2
-
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
       - name: restore cache workspace 
         uses: actions/cache@v3
         with: 
-          path: ${{ github.workspace }}/*
+          path: ${{ github.workspace }}
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
-      - name: Run test
-        uses: microsoft/vstest-action@v1.0.0
+      - name: restore cache packages
+        uses: actions/cache@v3
         with:
-          testAssembly: WslTest.dll
-          searchFolder: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
-          runInParallel: true
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
