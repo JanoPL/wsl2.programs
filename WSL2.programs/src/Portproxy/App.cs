@@ -14,7 +14,7 @@ namespace Portproxy
         private readonly IContext context;
         private readonly IFirewall firewall;
         private readonly IWsl wsl;
-        private readonly ILogger<App> logger;
+        private readonly ILogger<App> _logger;
 
         public App(
             ILogger<App> logger,
@@ -25,37 +25,28 @@ namespace Portproxy
             this.context = context;
             this.firewall = firewall;
             this.wsl = wsl;
-            logger.Log(LogLevel.Debug, "Application constructed");
-        }
-
-        public class Options
-        {
-            [Option('l', "List", Required = false, HelpText = "show portproxy information")]
-            public bool List { get; set; }
-
-            [Option('d', "Delete", Required = false, HelpText = "Delete all portproxy information")]
-            public bool Delete { get; set; }
-
-            [Option('c', "Create", Required = false, HelpText = "Create all portproxy information")]
-            public bool Create { get; set; }
+            _logger = logger;
+            _logger.LogDebug("Application constructed");
         }
 
         public void Run(string[] args)
-        { 
-            Parser
+        {
+            _logger.LogInformation("Application Run");
+
+            var results = Parser
                 .Default
-                .ParseArguments<Options>(args)
-                .WithParsed<Options>(o => {
+                .ParseArguments<AppConfig>(args)
+                .WithParsed<AppConfig>(o => {
                     if (o.List) {
-                        context.AddStrategy(new List());
+                        context.AddStrategy(new List(_logger));
                         context.ExecuteStrategies();
                     } else if (o.Delete) {
-                        context.AddStrategy(new DeleteFWRule(firewall));
+                        context.AddStrategy(new DeleteFWRule(firewall, _logger));
                         context.ExecuteStrategies();
                     } else if (o.Create) {
-                        context.AddStrategy(new CreateFWRule(firewall));
-                        context.AddStrategy(new CheckWslIPAddress(logger, wsl));
-                        context.AddStrategy(new AddPortProxyInformation(wsl));
+                        context.AddStrategy(new CreateFWRule(firewall, _logger));
+                        context.AddStrategy(new CheckWslIPAddress(_logger, wsl));
+                        context.AddStrategy(new AddPortProxyInformation(wsl, _logger));
                         context.ExecuteStrategies();
                     }
                 });

@@ -38,10 +38,10 @@ namespace Portproxy
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
             services.AddSingleton<IApp, App>();
-            services.AddSingleton<IAppConfig, AppConfig>();
-            services.AddSingleton<IContext, Context>();
-            services.AddSingleton<IWsl, Wsl>();
-            services.AddSingleton<IFirewall, Rules>();
+
+            services.AddFirewall();
+            services.AddStrategies();
+            services.AddWsl();
         }
     }
 }
