@@ -1,10 +1,11 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using WSL;
 using Xunit;
 
 namespace HelperTest
 {
-    public class WslHelper
+    public class WslHelper : LoggerHelper
     {
         private readonly string ipAddress = "127.0.0.1";
         private readonly IList<string> ports = new List<string> { "22", "2222", "80", "443" };
