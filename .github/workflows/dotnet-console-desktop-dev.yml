@@ -6,10 +6,13 @@ on:
       - master
 
 env:
-  Solution_Name: WSL2.programs/WSL2.programs.sln
-  Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
-  Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
-  Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
+  Solution_Name_Portproxy: programs/portproxy.sln
+  Firewall_Test_Project_Path: programs/tests/FireWallTest/FirewallTest.csproj
+  Firewall_Test_Project_dir: programs/tests/FireWallTest
+  Strategies_Test_Project_Path: programs/tests/StrategiesTest/StrategiesTest.csproj
+  Strategies_Test_Project_dir: programs/tests/StrategiesTest
+  Wsl_Test_Project_Path: programs/tests/WslTest/WslTest.csproj
+  Wsl_Test_Project_dir: programs/tests/WslTest
 
 
 jobs:
@@ -54,7 +57,7 @@ jobs:
         run: nuget restore ${{ env.Solution_Name }} 
 
       - name: dotnet build
-        run: dotnet build ${{ github.workspace }}\WSL2.programs.sln -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }}
+        run: dotnet build ${{ github.workspace }}\portproxy.sln -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -80,10 +83,10 @@ jobs:
           name: setups
 
       - name: Restore Packages
-        run: nuget restore ${{ env.Solution_Name }} 
+        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
 
       - name: Build Solution
-        run: msbuild $env:Solution_Name /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} -m
+        run: msbuild ${{ env.Solution_Name_Portproxy }} /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} -m
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -110,7 +113,7 @@ jobs:
         with:
           name: build_dotnet
       - name: dotnet test
-        run: dotnet test ${{ github.workspace }}/$env:Firewall_Test_Project_Path -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+        run: dotnet test ${{ github.workspace }}/${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
 
   test_firewall:
     name: Run firewall test
@@ -134,9 +137,8 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: FirewallTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/FirewallTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
-          runInParallel: true
-          otherConsoleOptions: '--collect:"Code Coverage;Format=Xml;CoverageFileName=coverage.xml" /ResultsDirectory:./coverage'
+          searchFolder: ${{ github.workspace }}/{{ env.Firewall_Test_Project_dir }}/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
+          runInParallel: true          
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -166,9 +168,8 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: StrategiesTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/StrategiesTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
+          searchFolder: ${{ github.workspace }}/{{ env.Strategies_Test_Project_dir }}/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
-          codeCoverageEnabled: true
 
   tests_wsl:
     name: Run Wsl test
@@ -192,7 +193,5 @@ jobs:
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: WslTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/WslTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
+          searchFolder: ${{ github.workspace }}/{{ Wsl_Test_Project_dir }}/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
           runInParallel: true
-          codeCoverageEnabled: true
-      
