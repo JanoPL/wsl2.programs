@@ -10,7 +10,7 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
 
-            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()));
+            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
 
             Assert.IsAssignableFrom<IStrategies>(proxyInformation);
         }
@@ -20,7 +20,7 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
 
-            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()));
+            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
 
             try {
                 proxyInformation.Execute();

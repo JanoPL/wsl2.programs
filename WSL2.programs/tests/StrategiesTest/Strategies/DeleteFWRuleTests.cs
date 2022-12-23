@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Versioning;
 using Firewall;
 using HelperTest;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Strategies;
 
@@ -14,7 +15,7 @@ namespace StrategiesTest.Strategies
         {
             FirewallHelper firewallHelper = new();
 
-            var deleteFwRule = new DeleteFWRule(firewallHelper.GetRules());
+            var deleteFwRule = new DeleteFWRule(firewallHelper.GetRules(), firewallHelper.GetLogger());
 
             Assert.IsAssignableFrom<IStrategies>(deleteFwRule);
         }
@@ -24,7 +25,7 @@ namespace StrategiesTest.Strategies
         {
             FirewallHelper firewallHelper = new();
 
-            DeleteFWRule createFWRule = new(firewallHelper.GetRules());
+            DeleteFWRule createFWRule = new(firewallHelper.GetRules(), firewallHelper.GetLogger());
 
             try {
                 createFWRule.Execute();

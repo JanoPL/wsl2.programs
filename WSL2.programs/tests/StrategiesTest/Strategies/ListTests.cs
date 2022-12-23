@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using HelperTest;
 using Moq;
 using Strategies;
 
@@ -21,7 +22,7 @@ namespace StrategiesTest.Strategies
             return processStartInfo;
         }
 
-        private (ProcessStartInfo, Mock<Process>, Mock<StreamReader>) GetMocks()
+        private static (ProcessStartInfo, Mock<Process>, Mock<StreamReader>) GetMocks()
         {
             ProcessStartInfo procStartinfo = GetProcessStartInfo();
             var mockProc = new Mock<Process>();
@@ -33,7 +34,7 @@ namespace StrategiesTest.Strategies
         [Fact]
         public void ExecuteTestWithEmptyOutput()
         {
-            (ProcessStartInfo procStartInfo, Mock<Process> mockProc, Mock<StreamReader> mockStreamReader) = GetMocks();
+            (ProcessStartInfo procStartInfo, Mock<Process> mockProc, Mock<StreamReader> mockStreamReader) = ListUnitTest.GetMocks();
 
             mockStreamReader.Setup(m => m.ReadLine()).Returns(string.Empty);
 
@@ -51,7 +52,11 @@ namespace StrategiesTest.Strategies
         [Fact(DisplayName = "Execute List Strategies")]
         public void ExecuteListStrategies()
         {
-            var list = new List();
+
+            var logger = new FirewallHelper().GetLogger();
+
+
+            var list = new List(logger);
             try {
                 list.Execute();
             } catch (Exception ex) {

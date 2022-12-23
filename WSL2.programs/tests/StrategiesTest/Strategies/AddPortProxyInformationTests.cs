@@ -14,7 +14,7 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
 
-            AddPortProxyInformation proxyInformation = new AddPortProxyInformation(wsl.GetIWsl(wsl.GetSettings()));
+            AddPortProxyInformation proxyInformation = new(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
 
             Assert.IsAssignableFrom<IStrategies>(proxyInformation);
         }
@@ -24,7 +24,7 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
 
-            AddPortProxyInformation proxyInformation = new AddPortProxyInformation(wsl.GetIWsl(wsl.GetSettings()));
+            AddPortProxyInformation proxyInformation = new(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
 
             try {
                 proxyInformation.Execute();
