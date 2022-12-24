@@ -17,7 +17,7 @@ namespace Strategies
 
         public void Execute()
         {
-            foreach (var port in _wsl.Settings.Ports) {
+            foreach (string port in _wsl.Settings.Ports) {
                 var proc = new Process {
                     StartInfo = new ProcessStartInfo {
                         FileName = "netsh.exe",
@@ -29,17 +29,21 @@ namespace Strategies
                     }
                 };
 
-                proc.Start();
+                bool start = proc.Start();
+
+                if (!start) {
+                    _logger.LogError("Can't remove portproxy information, with: ");
+                    _logger.LogError("listen address {listenAddress}", _wsl.Settings.IpAddress);
+                    _logger.LogError("listen port {port}", port);
+                    return;
+                }
 
                 while (!proc.StandardOutput.EndOfStream) {
                     string? line = proc.StandardOutput.ReadLine();
 
-                    if (string.IsNullOrEmpty(line)) {
-                        _logger.LogInformation("There is no portproxy information");
-                        return;
+                    if (line == null) {
+                        _logger.LogInformation("{line}", line);
                     }
-
-                    _logger.LogInformation("{line}", line);
                 }
             }
         }

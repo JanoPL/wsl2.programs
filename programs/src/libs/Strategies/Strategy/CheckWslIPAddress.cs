@@ -40,7 +40,7 @@ namespace Strategies
 
                 _wsl.SetIpAddress(ipAddress);
 
-                _logger.LogInformation($"Ip address: [0]", ipAddress);
+                _logger.LogInformation("WSL Ip address: {ipAddress}", ipAddress);
             }
         }
     }

@@ -35,11 +35,6 @@ namespace Strategies
                     return;
                 }
 
-                if (string.IsNullOrEmpty(line)) {
-                    _logger.LogInformation("There is no portproxy information");
-                    return;
-                }
-
                 if (line != null) {
                     _logger.LogInformation("{line}", line);
                 }

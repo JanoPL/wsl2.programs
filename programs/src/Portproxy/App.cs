@@ -31,7 +31,7 @@ namespace Portproxy
 
         public void Run(string[] args)
         {
-            _logger.LogInformation("Application Run");
+            _logger.LogInformation("Application: {application_name} Running", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 
             var results = Parser
                 .Default

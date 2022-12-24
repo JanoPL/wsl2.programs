@@ -32,17 +32,28 @@ namespace Strategies
                     }
                 };
 
-                proc.Start();
+                bool start = proc.Start();
+
+                if (!start) {
+                    _logger.LogError("Can't add portproxy information with: ");
+                    _logger.LogError("listen address: ", address);
+                    _logger.LogError("listen port: ", Wsl.Settings.Ports);
+                    _logger.LogError("connection address: ", Wsl.Settings.IpAddress);
+                    _logger.LogError("connection port: ", port);
+                    return;
+                }
 
                 while (!proc.StandardOutput.EndOfStream) {
                     string? line = proc.StandardOutput.ReadLine();
 
-                    if (string.IsNullOrEmpty(line)) {
-                        _logger.LogInformation("There is no portproxy information");
-                        return;
-                    }
+                    //if (string.IsNullOrEmpty(line)) {
+                    //    _logger.LogInformation("There is no portproxy information");
+                    //    return;
+                    //}
 
-                    _logger.LogInformation("{line}", line);
+                    if (line != null) { 
+                        _logger.LogInformation("{line}", line);
+                    }
                 }
             }
         }
