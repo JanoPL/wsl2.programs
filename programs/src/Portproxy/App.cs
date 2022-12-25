@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Strategies;
 using WSL;
 using System.Runtime.Versioning;
+using Strategies.Strategy;
 
 namespace Portproxy
 {
@@ -32,6 +33,10 @@ namespace Portproxy
         public void Run(string[] args)
         {
             _logger.LogInformation("Application: {application_name} Running", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+
+            context.AddStrategy(new CheckUserRoles(_logger));
+            context.ExecuteStrategies();
+            context.CleanStrategies();
 
             var results = Parser
                 .Default
