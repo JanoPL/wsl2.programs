@@ -26,8 +26,8 @@ namespace Strategies
                     foreach (var firewallRule in _firewall.Elements) {
                         try {
                             firewallPolicy.Rules.Add(firewallRule);
-                        } catch (UnauthorizedAccessException exception) {
-                            _logger.LogError("Cannot add firewall rule, You must run command as Administrator, message: {message}", exception.Message);
+                        } catch (Exception exception) {
+                            _logger.LogError("Cannot add firewall rule, message: {message}", exception.Message);
                             return;
                         }
 
