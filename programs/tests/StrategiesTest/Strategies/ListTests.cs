@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Versioning;
 using System.Text;
 using HelperTest;
 using Moq;
@@ -6,6 +7,7 @@ using Strategies;
 
 namespace StrategiesTest.Strategies
 {
+    [SupportedOSPlatform("windows")]
     public class ListUnitTest
     {
         private static ProcessStartInfo GetProcessStartInfo()

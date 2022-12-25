@@ -12,8 +12,7 @@ namespace StrategiesTest.Strategies
         public void CheckWslIPAddressTest()
         {
             var wsl = new WslHelper();
-            var mockLogger = new Mock<ILogger<CheckWslIPAddress>>();
-            var logger = mockLogger.Object;
+            var logger = wsl.GetLogger();
 
             CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
 
@@ -24,8 +23,7 @@ namespace StrategiesTest.Strategies
         public void ExecuteTest()
         {
             var wsl = new WslHelper();
-            var mockLogger = new Mock<ILogger<CheckWslIPAddress>>();
-            var logger = mockLogger.Object;
+            var logger = wsl.GetLogger();
 
             CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
             
