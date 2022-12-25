@@ -52,17 +52,18 @@ jobs:
           key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-
-      - name: Restore Packages
-        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
-
+      
       - name: store cache packages
         uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      
+      - name: Restore Packages
+        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
 
       - name: store workspace cache
         uses: actions/cache@v3
