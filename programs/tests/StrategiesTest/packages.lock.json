@@ -1069,6 +1069,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[7.0.0, )",
+          "Stateless": "[5.12.0, )",
           "WSL": "[1.0.0, )"
         }
       },
@@ -1108,6 +1109,12 @@
         "dependencies": {
           "Castle.Core": "5.1.0"
         }
+      },
+      "Stateless": {
+        "type": "CentralTransitive",
+        "requested": "[5.12.0, )",
+        "resolved": "5.12.0",
+        "contentHash": "nUD9YhYMm5YYIPup1dUsAlHWmREp+N1aJtIsQwsCduYzUx3Zov2sPXJACzW0A2TleGTT7BoiV453CHm5tHVRqg=="
       },
       "xunit.assert": {
         "type": "CentralTransitive",
@@ -2179,6 +2186,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[7.0.0, )",
+          "Stateless": "[5.12.0, )",
           "WSL": "[1.0.0, )"
         }
       },
@@ -2218,6 +2226,12 @@
         "dependencies": {
           "Castle.Core": "5.1.0"
         }
+      },
+      "Stateless": {
+        "type": "CentralTransitive",
+        "requested": "[5.12.0, )",
+        "resolved": "5.12.0",
+        "contentHash": "nUD9YhYMm5YYIPup1dUsAlHWmREp+N1aJtIsQwsCduYzUx3Zov2sPXJACzW0A2TleGTT7BoiV453CHm5tHVRqg=="
       },
       "xunit.assert": {
         "type": "CentralTransitive",

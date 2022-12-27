@@ -23,6 +23,12 @@
         "resolved": "7.0.0",
         "contentHash": "kmn78+LPVMOWeITUjIlfxUPDsI0R6G0RkeAMBmQxAJ7vBJn4q2dTva7pWi65ceN5vPGjJ9q/Uae2WKgvfktJAw=="
       },
+      "Stateless": {
+        "type": "Direct",
+        "requested": "[5.12.0, )",
+        "resolved": "5.12.0",
+        "contentHash": "nUD9YhYMm5YYIPup1dUsAlHWmREp+N1aJtIsQwsCduYzUx3Zov2sPXJACzW0A2TleGTT7BoiV453CHm5tHVRqg=="
+      },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
         "resolved": "7.0.0",
@@ -73,6 +79,12 @@
         "requested": "[7.0.0, )",
         "resolved": "7.0.0",
         "contentHash": "kmn78+LPVMOWeITUjIlfxUPDsI0R6G0RkeAMBmQxAJ7vBJn4q2dTva7pWi65ceN5vPGjJ9q/Uae2WKgvfktJAw=="
+      },
+      "Stateless": {
+        "type": "Direct",
+        "requested": "[5.12.0, )",
+        "resolved": "5.12.0",
+        "contentHash": "nUD9YhYMm5YYIPup1dUsAlHWmREp+N1aJtIsQwsCduYzUx3Zov2sPXJACzW0A2TleGTT7BoiV453CHm5tHVRqg=="
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
