@@ -15,6 +15,14 @@
     "Portproxy create": {
       "commandName": "Project",
       "commandLineArgs": "-c"
+    },
+    "Portproxy help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "Portproxy version": {
+      "commandName": "Project",
+      "commandLineArgs": "--version"
     }
   }
 }
