@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using Microsoft.Extensions.Logging;
 using WSL;
 
@@ -27,7 +28,12 @@ namespace Strategies
                 }
             };
 
-            proc.Start();
+            var start = proc.Start();
+
+            if (!start) {
+                _logger.LogError("Can't retriev hostname information");
+                return;
+            }
 
 
             while (!proc.StandardOutput.EndOfStream) {
