@@ -15,7 +15,7 @@ namespace StrategiesTest.Strategies
             Mock<IFirewall> mock = new();
             var logger = new FirewallHelper().GetLogger();
 
-            var createFwRule = new CreateFWRule(mock.Object, logger);
+            CreateFWRule createFwRule = new(mock.Object, logger);
 
             Assert.IsAssignableFrom<IStrategies>(createFwRule);
         }

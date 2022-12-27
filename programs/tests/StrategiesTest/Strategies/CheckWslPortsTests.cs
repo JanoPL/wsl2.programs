@@ -1,32 +1,32 @@
-﻿
-using HelperTest;
+﻿using HelperTest;
 using Strategies;
+using Strategies.Strategy;
 
 namespace StrategiesTest.Strategies
 {
-    public class CheckWslIPAddressTests
+    public class CheckWslPortsTests
     {
-        [Fact]
-        public void CheckWslIPAddressTest()
+        [Fact()]
+        public void CheckWslPortsTest()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
 
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
+            CheckWslPorts checkWslPorts = new(logger, wsl.GetIWsl(wsl.GetSettings()));
 
-            Assert.IsAssignableFrom<IStrategies>(checkWslIPAddress);
+            Assert.IsAssignableFrom<IStrategies>(checkWslPorts);
         }
 
-        [Fact]
+        [Fact()]
         public void ExecuteTest()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
 
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
+            CheckWslPorts checkWslPorts = new(logger, wsl.GetIWsl(wsl.GetSettings()));
 
             try {
-                checkWslIPAddress.Execute();
+                checkWslPorts.Execute();
             } catch (Exception ex) {
                 Assert.Fail(ex.Message);
             }

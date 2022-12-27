@@ -1,7 +1,8 @@
 ﻿using HelperTest;
+using Strategies;
 using Strategies.Strategy;
 
-namespace Strategies.Strategies
+namespace StrategiesTest.Strategies
 {
     public class CheckUserRolesTests
     {

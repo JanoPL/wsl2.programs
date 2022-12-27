@@ -1,29 +1,29 @@
-﻿
-using HelperTest;
+﻿using HelperTest;
 using Strategies;
+using Strategies.Strategy;
 
 namespace StrategiesTest.Strategies
 {
-    public class CheckWslIPAddressTests
+    public class GetWslPortsTests
     {
-        [Fact]
-        public void CheckWslIPAddressTest()
+        [Fact()]
+        public void GetWslPortsTest()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
 
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
+            GetWslPorts checkWslIPAddress = new(logger);
 
             Assert.IsAssignableFrom<IStrategies>(checkWslIPAddress);
         }
 
-        [Fact]
+        [Fact()]
         public void ExecuteTest()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
 
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
+            GetWslPorts checkWslIPAddress = new(logger);
 
             try {
                 checkWslIPAddress.Execute();
