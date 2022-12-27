@@ -12,10 +12,10 @@ namespace StrategiesTest.Strategies
         [Fact]
         public void CreateFWRuleTest()
         {
-            Mock<IFirewall> mock = new();
+            FirewallHelper firewallHelper = new();
             var logger = new FirewallHelper().GetLogger();
 
-            CreateFWRule createFwRule = new(mock.Object, logger);
+            CreateFWRule createFwRule = new(firewallHelper.GetRules(), logger);
 
             Assert.IsAssignableFrom<IStrategies>(createFwRule);
         }
