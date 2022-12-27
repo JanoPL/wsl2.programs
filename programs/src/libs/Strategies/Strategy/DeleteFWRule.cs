@@ -14,13 +14,13 @@ namespace Strategies
 
         public DeleteFWRule(IFirewall firewall, ILogger logger)
         {
-            _rules = firewall.BuildOutbound().BuildOutbound();
+            _rules = firewall.BuildInbound().BuildOutbound();
             _logger = logger;
         }
 
         public void Execute()
         {
-            Console.WriteLine("Removing firewall rules");
+            _logger.LogInformation("Removing firewall rules");
 
             Type? type = Type.GetTypeFromProgID(ProgID);
 
@@ -34,6 +34,9 @@ namespace Strategies
                                 firewallPolicy.Rules.Remove(firewallRule.Name);
                             } catch (UnauthorizedAccessException exception) {
                                 _logger.LogError("Cannot remove firewall rule, You must run command as Administrator, message: {message}", exception.Message);
+                                return;
+                            } catch (Exception exception) {
+                                _logger.LogError("Cannot remove firewall rule, message: {message}", exception.Message);
                                 return;
                             }
 
