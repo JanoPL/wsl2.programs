@@ -14,5 +14,11 @@ namespace Portproxy
 
         [Option('c', "Create", Required = false, HelpText = "Create all portproxy information")]
         public bool Create { get; set; }
+
+        [Option('p', "list-ports", Required = false, HelpText = "List all listens ports information")]
+        public bool ListPorts { get; set; }
+
+        [Option('a', "list-address", Required = false, HelpText = "List Ip Address information from WSL2")]
+        public bool ListIpAddress { get; set; }
     }
 }

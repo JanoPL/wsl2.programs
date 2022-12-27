@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommandLine;
 using Firewall;
-using Microsoft.Extensions.Hosting;
 using Strategies;
 using WSL;
 using System.Runtime.Versioning;
@@ -45,12 +44,19 @@ namespace Portproxy
                     if (o.List) {
                         context.AddStrategy(new List(_logger));
                         context.ExecuteStrategies();
+                    } else if (o.ListPorts) {
+                        context.AddStrategy(new GetWslPorts(_logger));
+                        context.ExecuteStrategies();
+                    } else if (o.ListIpAddress) {
+                        context.AddStrategy(new CheckWslIPAddress(_logger, wsl));
+                        context.ExecuteStrategies();
                     } else if (o.Delete) {
                         context.AddStrategy(new DeleteFWRule(firewall, _logger));
                         context.ExecuteStrategies();
                     } else if (o.Create) {
                         context.AddStrategy(new CreateFWRule(firewall, _logger));
                         context.AddStrategy(new CheckWslIPAddress(_logger, wsl));
+                        context.AddStrategy(new CheckWslPorts(_logger, wsl));
                         context.AddStrategy(new AddPortProxyInformation(wsl, _logger));
                         context.ExecuteStrategies();
                     }
