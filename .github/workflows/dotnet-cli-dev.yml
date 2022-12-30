@@ -13,6 +13,8 @@ env:
   Strategies_Test_Project_dir: programs\tests\StrategiesTest
   Wsl_Test_Project_Path: programs\tests\WslTest\WslTest.csproj
   Wsl_Test_Project_dir: programs\tests\WslTest
+  Ports_Test_Project_Path: programs\tests\PortsTest\PortsTest.csproj
+  Ports_Test_Project_dir: programs\tests\PortsTest
   Cache_Workplace_Key: ${{ github.workflow }}-workspace
 
 jobs:
@@ -212,3 +214,37 @@ jobs:
 
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+
+  test_ports_dotnet:
+    name: Run ports test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Ports_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
