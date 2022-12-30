@@ -21,7 +21,7 @@ jobs:
   checkout:
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     runs-on: windows-2022
@@ -43,7 +43,7 @@ jobs:
     needs: [ checkout ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
@@ -79,7 +79,7 @@ jobs:
     needs: [ restore ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
@@ -121,7 +121,7 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
@@ -149,7 +149,7 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
@@ -177,7 +177,7 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
@@ -205,7 +205,7 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Debug ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:

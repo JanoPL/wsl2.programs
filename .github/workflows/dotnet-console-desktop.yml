@@ -7,85 +7,142 @@ on:
     branches: [ "master" ]
 
 env:
-  Solution_Name: WSL2.programs/WSL2.programs.sln
-  Firewall_Test_Project_Path: WSL2.programs/tests/FireWallTest/FirewallTest.csproj
-  Strategies_Test_Project_Path: WSL2.programs/tests/StrategiesTest/StrategiesTest.csproj
-  Wsl_Test_Project_Path: WSL2.programs/tests/WslTest/WslTest.csproj
-
+  Solution_Name_Portproxy: programs/portproxy.sln
+  Firewall_Test_Project_Path: programs/tests/FireWallTest/FirewallTest.csproj
+  Firewall_Test_Project_dir: programs/tests/FireWallTest
+  Strategies_Test_Project_Path: programs/tests/StrategiesTest/StrategiesTest.csproj
+  Strategies_Test_Project_dir: programs/tests/StrategiesTest
+  Wsl_Test_Project_Path: programs/tests/WslTest/WslTest.csproj
+  Wsl_Test_Project_dir: programs/tests/WslTest
+  Ports_Test_Project_Path: programs\tests\PortsTest\PortsTest.csproj
+  Ports_Test_Project_dir: programs\tests\PortsTest
+  Cache_Workplace_Key: ${{ github.workflow }}-workspace
 
 jobs:
   checkout:
     strategy:
       matrix:
-        configuration: [Debug, Release]
-
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
     runs-on: windows-2022
-
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: setups
-        path: ${{ github.workspace }}
 
-  build:
-    name: Build Solution
+    - name: store workspace cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/*
+        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+  restore: 
+    name: Restore packages
     runs-on: windows-2022
     needs: [ checkout ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Release ]
         platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
+    steps:
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: store cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      
+      - name: Restore Packages
+        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
+
+      - name: store workspace cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          
+
+  build:
+    name: Build Solution
+    runs-on: windows-2022
+    needs: [ restore ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
     steps:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1.3
 
-      - name: Download a restores artifact
-        uses: actions/download-artifact@v3
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
         with:
-          name: setups
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - name: Restore Packages
-        run: nuget restore ${{ env.Solution_Name }} 
+        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
 
       - name: Build Solution
-        run: msbuild $env:Solution_Name /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        run: msbuild ${{ env.Solution_Name_Portproxy }} /p:configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} -m
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: store workspace cache
+        uses: actions/cache@v3
         with:
-          name: build
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          
 
-  test_firewall: 
+  test_firewall:
     name: Run firewall test
     runs-on: windows-2022
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
 
-      - name: Download a build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
       - name: Run test
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: FirewallTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/FirewallTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
-          runInParallel: true
+          searchFolder: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
+          runInParallel: true          
 
   tests_strategies:
     name: Run Strategies test
@@ -93,23 +150,26 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
 
-      - name: Download a build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
       - name: Run test
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: StrategiesTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/StrategiesTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
+          searchFolder: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
           runInParallel: true
 
   tests_wsl:
@@ -118,22 +178,52 @@ jobs:
     needs: [ build ]
     strategy:
       matrix:
-        configuration: [ Debug, Release ]
+        configuration: [ Release ]
         platform: [ x64 ]
         dotnet_version: [ net6.0 ]
     steps:
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
 
-      - name: Download a build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
       - name: Run test
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: WslTest.dll
-          searchFolder: ${{ github.workspace }}/WSL2.programs/tests/WslTest/bin/${{ matrix.platform }}/${{ matrix.configuration }}/${{ matrix.dotnet_version }}/
+          searchFolder: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
           runInParallel: true
-      
+
+  tests_ports:
+    name: Run ports test
+    runs-on: windows-2022
+    needs: [ build ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0 ]
+    steps:
+      - name: Setup VSTest
+        uses: darenm/Setup-VSTest@v1.2
+
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: Run test
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: PortsTest.dll
+          searchFolder: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
+          runInParallel: true
