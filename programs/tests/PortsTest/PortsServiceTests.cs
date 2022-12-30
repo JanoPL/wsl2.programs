@@ -25,11 +25,23 @@ namespace PortsTest
         }
 
         [Fact]
-        public void ParseAsStringTest()
+        public void ParseAsStringNewLineTest()
         {
             PortsService portsService = GetService();
 
             string? result = portsService.ParseAsString(GetJsonToParse(), true);
+
+            Assert.NotNull(result);
+
+            Assert.Equal(GetJsonFromParse(), result);
+        }
+
+        [Fact]
+        public void ParseAsStringInlineTest()
+        {
+            PortsService portsService = GetService();
+
+            string? result = portsService.ParseAsString(GetJsonToParse(), false);
 
             Assert.NotNull(result);
 

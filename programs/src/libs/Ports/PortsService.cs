@@ -29,6 +29,7 @@ namespace Ports
                         sb.AppendLine(stringItem);
                     } else {
                         sb.Append(stringItem);
+                        sb.AppendLine();
                     }
                 }
             }
