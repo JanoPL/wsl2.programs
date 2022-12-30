@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using WSL;
 
 namespace Strategies.Strategy
@@ -13,7 +8,7 @@ namespace Strategies.Strategy
         private ILogger _logger;
         private IWsl _wsl;
 
-        public CheckWslPorts(ILogger logger, IWsl wsl) 
+        public CheckWslPorts(ILogger logger, IWsl wsl)
         {
             _logger = logger;
             _wsl = wsl;
