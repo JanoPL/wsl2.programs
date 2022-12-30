@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ports;
-using Strategies;
 
-namespace StrategiesTest
+namespace PortsTest
 {
-    public class StrategiesServiceCollectionExtensionsTests
+    public class PortsServiceCollectionExtensionTests
     {
         private (ServiceCollection, IConfigurationRoot) GetServiceConfiguration()
         {
@@ -16,19 +15,15 @@ namespace StrategiesTest
         }
 
         [Fact]
-        public void AddStrategiesTest()
+        public void AddPortsWithConfigurationTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
 
-            services.AddStrategies(configuration);
+            services.AddPorts(configuration);
 
             Assert.True(services.Count >= 1);
 
             Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IContext), item.ServiceType)
-                ),
                 item => Assert.Multiple(
                         () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
                         () => Assert.Equal(typeof(IPorts), item.ServiceType)
@@ -37,19 +32,15 @@ namespace StrategiesTest
         }
 
         [Fact]
-        public void AddStrategiesDependencyTest()
+        public void AddPortsTestWithoutConfiguration()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
 
-            services.AddStrategies();
+            services.AddPorts();
 
             Assert.True(services.Count >= 1);
 
             Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IContext), item.ServiceType)
-                ),
                 item => Assert.Multiple(
                         () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
                         () => Assert.Equal(typeof(IPorts), item.ServiceType)

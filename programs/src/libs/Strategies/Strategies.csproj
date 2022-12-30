@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Firewall\Firewall.csproj" />
+    <ProjectReference Include="..\Ports\Ports.csproj" />
     <ProjectReference Include="..\WSL\WSL.csproj" />
   </ItemGroup>
 

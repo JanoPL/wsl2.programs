@@ -23,6 +23,14 @@
     "Portproxy version": {
       "commandName": "Project",
       "commandLineArgs": "--version"
+    },
+    "Portproxy list ports": {
+      "commandName": "Project",
+      "commandLineArgs": "--list-ports"
+    },
+    "portproxy list address": {
+      "commandName": "Project",
+      "commandLineArgs": "--list-address"
     }
   }
 }

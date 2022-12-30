@@ -11,8 +11,9 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
+            var ports = wsl.GetPortsList();
 
-            GetWslPorts checkWslIPAddress = new(logger);
+            GetWslPorts checkWslIPAddress = new(logger, ports);
 
             Assert.IsAssignableFrom<IStrategies>(checkWslIPAddress);
         }
@@ -22,8 +23,9 @@ namespace StrategiesTest.Strategies
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
+            var ports = wsl.GetPortsList();
 
-            GetWslPorts checkWslIPAddress = new(logger);
+            GetWslPorts checkWslIPAddress = new(logger, ports);
 
             try {
                 checkWslIPAddress.Execute();

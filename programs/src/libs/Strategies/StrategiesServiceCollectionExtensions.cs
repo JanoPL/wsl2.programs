@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Ports;
 
 namespace Strategies
 {
@@ -11,6 +13,7 @@ namespace Strategies
         )
         {
             services.AddScoped<IContext, Context>();
+            services.AddPorts();
 
             return services;
         }
@@ -20,6 +23,7 @@ namespace Strategies
         )
         {
             services.AddScoped<IContext, Context>();
+            services.AddPorts();
 
             return services;
         }

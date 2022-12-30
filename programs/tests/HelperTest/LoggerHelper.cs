@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Ports;
 
 namespace HelperTest
 {
@@ -18,5 +19,19 @@ namespace HelperTest
             return mockLogger.Object;
         }
 #pragma warning restore CA1822
+
+        public ILogger<T> GetLogger<T>()
+        {
+            var mockLogger = new Mock<ILogger<T>>();
+
+            return mockLogger.Object;
+        }
+
+        public IPorts GetPortsList()
+        {
+            var mockListPortsObject = new Mock<IPorts>();
+
+            return mockListPortsObject.Object;
+        }
     }
 }
