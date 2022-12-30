@@ -223,6 +223,6 @@ jobs:
       - name: Run test
         uses: microsoft/vstest-action@v1.0.0
         with:
-          testAssembly: WslTest.dll
+          testAssembly: PortsTest.dll
           searchFolder: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
           runInParallel: true
