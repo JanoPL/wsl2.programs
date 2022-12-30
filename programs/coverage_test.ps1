@@ -9,15 +9,15 @@
     Build_&_pack.ps1
 
 .NOTES
-    Version    : 1.0.0
+    Version    : 1.0.1
     Author     : JanoPL
-    Created on : 2022-12-20
+    Created on : 2022-12-30
     License    : MIT License
     Copyright  : (c) 2022 JanoPL
 #>
 
-dotnet build  --configuration Release;
-
+dotnet clean --configuration Release;
+dotnet build --configuration Release;
 
 dotnet test --collect:"XPlat Code Coverage" --no-build 
 
