@@ -23,7 +23,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -45,7 +45,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: restore cache workspace 
         uses: actions/cache@v3
@@ -81,7 +81,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: restore cache workspace 
         uses: actions/cache@v3
@@ -121,7 +121,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
@@ -155,7 +155,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
@@ -189,7 +189,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
@@ -223,7 +223,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0 ]
+        dotnet_version: [ net6.0, net7.0 ]
     steps:
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v3
