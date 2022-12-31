@@ -6,7 +6,7 @@ namespace StrategiesTest.Strategies
 {
     public class CheckWslPortsTests
     {
-        [Fact()]
+        [Fact]
         public void CheckWslPortsTest()
         {
             var wsl = new WslHelper();
@@ -17,7 +17,7 @@ namespace StrategiesTest.Strategies
             Assert.IsAssignableFrom<IStrategies>(checkWslPorts);
         }
 
-        [Fact()]
+        [Fact]
         public void ExecuteTest()
         {
             var wsl = new WslHelper();
