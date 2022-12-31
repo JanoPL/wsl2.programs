@@ -42,7 +42,7 @@ namespace Portproxy
             _context.ExecuteStrategies();
             _context.CleanStrategies();
 
-            var results = Parser
+            Parser
                 .Default
                 .ParseArguments<AppConfig>(args)
                 .WithParsed<AppConfig>(o => {
