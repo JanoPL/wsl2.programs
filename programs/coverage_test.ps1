@@ -9,17 +9,18 @@
     Build_&_pack.ps1
 
 .NOTES
-    Version    : 1.0.1
+    Version    : 1.0.2
     Author     : JanoPL
-    Created on : 2022-12-30
+    Created on : 2022-12-31
     License    : MIT License
     Copyright  : (c) 2022 JanoPL
 #>
 
+dotnet restore
 dotnet clean --configuration Release;
 dotnet build --configuration Release;
 
-dotnet test --collect:"XPlat Code Coverage" --no-build 
+dotnet test --collect:"XPlat Code Coverage" --no-build --no-restore --configuration Release
 
 if (Get-Command reportgenerator.exe -ErrorAction SilentlyContinue) {
     reportgenerator.exe -reports:tests\*\TestResults\*\coverage.cobertura.xml -targetdir:coveragereport    
