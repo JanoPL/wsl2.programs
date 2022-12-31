@@ -1,6 +1,6 @@
 ﻿namespace HelperTest
 {
-    public class ExtensionTestHelper
+    public static class ExtensionTestHelper
     {
         public static void CheckServices(ServiceCollection services, IList<Type> types)
         {
@@ -11,23 +11,15 @@
 
                 ServiceDescriptor? service = services.Where(service => service.ServiceType.Name == type.Name).FirstOrDefault();
 
-                if (service != null) {
-                    checks.Add(() => Assert.Equal(ServiceLifetime.Scoped, service.Lifetime));
+                try {
+                    checks.Add(() => Assert.Equal(ServiceLifetime.Scoped, service?.Lifetime));
 
-                    checks.Add(() => Assert.Equal(type, service.ServiceType));
+                    checks.Add(() => Assert.Equal(type, service?.ServiceType));
 
                     actions.Add(item => Assert.Multiple(checks.ToArray()));
-                } else {
-                    Assert.Fail($"The service Collection has not typed service: {type.Name}");
+                } catch (NullReferenceException ex) {
+                    throw ex;
                 }
-
-                //foreach (ServiceDescriptor service in services) {
-                //        checks.Add(() => Assert.Equal(ServiceLifetime.Scoped, service.Lifetime));
-
-                //        checks.Add(() => Assert.Equal(type, service.ServiceType));
-                //}
-
-                //actions.Add(item => Assert.Multiple(checks.ToArray()));
             }
 
             Assert.Collection<ServiceDescriptor>(services, actions.ToArray());
