@@ -17,7 +17,7 @@
                     checks.Add(() => Assert.Equal(type, service?.ServiceType));
 
                     actions.Add(item => Assert.Multiple(checks.ToArray()));
-                } catch (NullReferenceException ex) {
+                } catch (NullReferenceException) {
                     throw;
                 }
             }
