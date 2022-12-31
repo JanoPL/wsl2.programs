@@ -1,39 +1,25 @@
-﻿using HelperTest;
-using Strategies;
-using Strategies.Strategy;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     public class GetWslPortsTests
     {
-        [Fact]
-        public void GetWslPortsTest()
+        private GetWslPorts SetupService()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
             var ports = wsl.GetPortsList();
 
-            GetWslPorts checkWslIPAddress = new(logger, ports);
-
-            Assert.IsAssignableFrom<IStrategies>(checkWslIPAddress);
+            return new GetWslPorts(logger, ports);
+        }
+        [Fact]
+        public void GetWslPortsTest()
+        {
+            Assert.IsAssignableFrom<IStrategies>(SetupService());
         }
 
         [Fact]
         public void ExecuteTest()
         {
-            var wsl = new WslHelper();
-            var logger = wsl.GetLogger();
-            var ports = wsl.GetPortsList();
-
-            GetWslPorts checkWslIPAddress = new(logger, ports);
-
-            try {
-                checkWslIPAddress.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }

@@ -1,37 +1,25 @@
-﻿using HelperTest;
-using Strategies;
-using Strategies.Strategy;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     public class CheckUserRolesTests
     {
-        [Fact]
-        public void CheckUserRolesTest()
+        private CheckUserRoles SetupService()
         {
             TestHelper testHelper = new TestHelper();
             var logger = testHelper.GetLogger();
 
-            CheckUserRoles checkUserRoles = new(logger);
+            return new CheckUserRoles(logger);
+        }
 
-            Assert.IsAssignableFrom<IStrategies>(checkUserRoles);
+        [Fact]
+        public void CheckUserRolesTest()
+        {
+            Assert.IsAssignableFrom<IStrategies>(SetupService());
         }
 
         [Fact]
         public void ExecuteTest()
         {
-            var testHelper = new TestHelper();
-            var logger = testHelper.GetLogger();
-
-            CheckUserRoles checkUserRoles = new(logger);
-
-            try {
-                checkUserRoles.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }

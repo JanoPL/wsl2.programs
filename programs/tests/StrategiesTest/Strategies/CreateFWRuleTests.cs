@@ -1,39 +1,26 @@
-﻿using System.Runtime.Versioning;
-using Firewall;
-using HelperTest;
-using Moq;
-using Strategies;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     [SupportedOSPlatform("windows")]
     public class CreateFWRuleTests
     {
-        [Fact]
-        public void CreateFWRuleTest()
+        private CreateFWRule SetupService()
         {
             FirewallHelper firewallHelper = new();
             var logger = new FirewallHelper().GetLogger();
 
-            CreateFWRule createFwRule = new(firewallHelper.GetRules(), logger);
+            return new CreateFWRule(firewallHelper.GetRules(), logger);
+        }
 
-            Assert.IsAssignableFrom<IStrategies>(createFwRule);
+        [Fact]
+        public void CreateFWRuleTest()
+        {
+            Assert.IsAssignableFrom<IStrategies>(SetupService());
         }
 
         [Fact]
         public void ExecuteTest()
         {
-            FirewallHelper firewallHelper = new();
-
-            CreateFWRule createFWRule = new(firewallHelper.GetRules(), firewallHelper.GetLogger());
-
-            try {
-                createFWRule.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }

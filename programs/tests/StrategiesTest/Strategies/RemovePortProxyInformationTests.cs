@@ -1,34 +1,25 @@
-﻿using HelperTest;
-using Strategies;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     public class RemovePortProxyInformationTests
     {
-        [Fact]
-        public void RemovePortProxyInformationTest()
+        private RemovePortProxyInformation SetupService()
         {
             var wsl = new WslHelper();
 
-            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
+            return new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
+        }
 
-            Assert.IsAssignableFrom<IStrategies>(proxyInformation);
+        [Fact]
+        public void RemovePortProxyInformationTest()
+        {
+
+            Assert.IsAssignableFrom<IStrategies>(SetupService());
         }
 
         [Fact]
         public void ExecuteTest()
         {
-            var wsl = new WslHelper();
-
-            RemovePortProxyInformation proxyInformation = new RemovePortProxyInformation(wsl.GetIWsl(wsl.GetSettings()), wsl.GetLogger());
-
-            try {
-                proxyInformation.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }

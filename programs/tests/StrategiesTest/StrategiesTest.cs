@@ -1,7 +1,4 @@
-﻿using Moq;
-using Strategies;
-
-namespace StrategiesTest
+﻿namespace StrategiesTest
 {
     public class StrategiesTest
     {

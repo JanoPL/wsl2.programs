@@ -1,5 +1,4 @@
-﻿using Firewall;
-using HelperTest;
+﻿using HelperTest;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WSL;
@@ -8,31 +7,25 @@ namespace WslTest
 {
     public class WslServiceCollectionExtensionsTests
     {
-        private (ServiceCollection, IConfigurationRoot) ServiceConfiguration
+        private (ServiceCollection, IConfigurationRoot) GetServiceConfiguration()
         {
-            get
-            {
-                var services = new ServiceCollection();
-                var configuration = new ConfigurationBuilder().Build();
+            var services = new ServiceCollection();
+            var configuration = new ConfigurationBuilder().Build();
 
-                return (services, configuration);
-            }
+            return (services, configuration);
         }
 
-        private ServiceCollection Service
+        private ServiceCollection GetService()
         {
-            get
-            {
-                ServiceCollection services = new();
+            ServiceCollection services = new();
 
-                return services; 
-            }
+            return services;
         }
 
         [Fact]
         public void AddWslWithConfigurationTest()
         {
-            (ServiceCollection services, IConfigurationRoot configuration) = ServiceConfiguration;
+            (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
 
             services.AddWsl(configuration);
 
@@ -48,7 +41,7 @@ namespace WslTest
         [Fact]
         public void AddWslWithoutConfigurationTest()
         {
-            ServiceCollection services = Service;
+            ServiceCollection services = GetService();
 
             services.AddWsl();
 

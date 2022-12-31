@@ -1,37 +1,26 @@
-﻿
-using HelperTest;
-using Strategies;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     public class CheckWslIPAddressTests
     {
-        [Fact]
-        public void CheckWslIPAddressTest()
+        private CheckWslIPAddress SetupService()
         {
             var wsl = new WslHelper();
             var logger = wsl.GetLogger();
 
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
+            return new CheckWslIPAddress(logger, wsl.GetIWsl(wsl.GetSettings()));
+        }
 
-            Assert.IsAssignableFrom<IStrategies>(checkWslIPAddress);
+        [Fact]
+        public void CheckWslIPAddressTest()
+        {
+
+            Assert.IsAssignableFrom<IStrategies>(SetupService());
         }
 
         [Fact]
         public void ExecuteTest()
         {
-            var wsl = new WslHelper();
-            var logger = wsl.GetLogger();
-
-            CheckWslIPAddress checkWslIPAddress = new(logger, wsl.GetIWsl(wsl.GetSettings()));
-
-            try {
-                checkWslIPAddress.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }

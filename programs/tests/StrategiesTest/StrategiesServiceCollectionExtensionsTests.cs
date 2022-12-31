@@ -1,10 +1,4 @@
-﻿using HelperTest;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Ports;
-using Strategies;
-
-namespace StrategiesTest
+﻿namespace StrategiesTest
 {
     public class StrategiesServiceCollectionExtensionsTests
     {
@@ -14,7 +8,7 @@ namespace StrategiesTest
             var configuration = new ConfigurationBuilder().Build();
 
             return (services, configuration);
-        } 
+        }
 
         [Fact]
         public void AddStrategiesDependencyWithoutConfigurationTest()

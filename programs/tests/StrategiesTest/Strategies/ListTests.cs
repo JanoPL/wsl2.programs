@@ -1,15 +1,15 @@
-﻿using System.Diagnostics;
-using System.Runtime.Versioning;
-using System.Text;
-using HelperTest;
-using Moq;
-using Strategies;
-
-namespace StrategiesTest.Strategies
+﻿namespace StrategiesTest.Strategies
 {
     [SupportedOSPlatform("windows")]
     public class ListUnitTest
     {
+        private List SetupService()
+        {
+            var logger = new FirewallHelper().GetLogger();
+
+            return new List(logger);
+        }
+
         private static ProcessStartInfo GetProcessStartInfo()
         {
             ProcessStartInfo processStartInfo = new() {
@@ -54,18 +54,7 @@ namespace StrategiesTest.Strategies
         [Fact(DisplayName = "Execute List Strategies")]
         public void ExecuteListStrategies()
         {
-
-            var logger = new FirewallHelper().GetLogger();
-
-
-            var list = new List(logger);
-            try {
-                list.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
-            }
-
-            Assert.True(true);
+            StrategiesTestHelper.ExecuteMethod(SetupService());
         }
     }
 }
