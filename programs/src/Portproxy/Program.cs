@@ -13,7 +13,7 @@ using Ports;
 namespace Portproxy
 {
     [SupportedOSPlatform("windows")]
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -36,7 +36,7 @@ namespace Portproxy
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog();
 
-        private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IApp, App>();
 
