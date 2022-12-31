@@ -18,7 +18,7 @@
 
                     actions.Add(item => Assert.Multiple(checks.ToArray()));
                 } catch (NullReferenceException ex) {
-                    throw ex;
+                    throw;
                 }
             }
 

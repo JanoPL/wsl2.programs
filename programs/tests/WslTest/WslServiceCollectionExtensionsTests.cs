@@ -31,11 +31,7 @@ namespace WslTest
 
             Assert.True(services.Count >= 1);
 
-            IList<Type> types = new List<Type>() {
-                typeof(IWsl),
-            };
-
-            ExtensionTestHelper.CheckServices(services, types);
+            ExtensionTestHelper.CheckServices(services, new[] { typeof(IWsl) });
         }
 
         [Fact]
@@ -47,11 +43,7 @@ namespace WslTest
 
             Assert.True(services.Count >= 1);
 
-            IList<Type> types = new List<Type>() {
-                typeof(IWsl),
-            };
-
-            ExtensionTestHelper.CheckServices(services, types);
+            ExtensionTestHelper.CheckServices(services, new[] { typeof(IWsl) });
         }
     }
 }
