@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using HelperTest;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ports;
 using Strategies;
@@ -13,31 +14,10 @@ namespace StrategiesTest
             var configuration = new ConfigurationBuilder().Build();
 
             return (services, configuration);
-        }
+        } 
 
         [Fact]
-        public void AddStrategiesTest()
-        {
-            (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
-
-            services.AddStrategies(configuration);
-
-            Assert.True(services.Count >= 1);
-
-            Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IContext), item.ServiceType)
-                ),
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IPorts), item.ServiceType)
-                )
-            );
-        }
-
-        [Fact]
-        public void AddStrategiesDependencyTest()
+        public void AddStrategiesDependencyWithoutConfigurationTest()
         {
             (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
 
@@ -45,16 +25,29 @@ namespace StrategiesTest
 
             Assert.True(services.Count >= 1);
 
-            Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IContext), item.ServiceType)
-                ),
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IPorts), item.ServiceType)
-                )
-            );
+            IList<Type> types = new List<Type> {
+                typeof(IContext),
+                typeof(IPorts)
+            };
+
+            ExtensionTestHelper.CheckServices(services, types);
+        }
+
+        [Fact]
+        public void AddStrategiesDependencyWithConfigurationTest()
+        {
+            (ServiceCollection services, IConfigurationRoot configuration) = GetServiceConfiguration();
+
+            services.AddStrategies(configuration);
+
+            Assert.True(services.Count >= 1);
+
+            IList<Type> types = new List<Type> {
+                typeof(IContext),
+                typeof(IPorts)
+            };
+
+            ExtensionTestHelper.CheckServices(services, types);
         }
     }
 }
