@@ -15,6 +15,8 @@ env:
   Wsl_Test_Project_dir: programs/tests/WslTest
   Ports_Test_Project_Path: programs\tests\PortsTest\PortsTest.csproj
   Ports_Test_Project_dir: programs\tests\PortsTest
+  Solution_Test_Project_Path: programs\tests\SolutionTest\SolutionTest.csproj
+  Solution_Test_Project_dir: programs\tests\SolutionTest
   Cache_Workplace_Key: ${{ github.workflow }}-workspace
 
 jobs:
@@ -225,4 +227,32 @@ jobs:
         with:
           testAssembly: PortsTest.dll
           searchFolder: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
+          runInParallel: true
+
+  tests_solution:
+    name: Run solution test
+    runs-on: windows-2022
+    needs: [ build ]
+    strategy:
+      matrix:
+        configuration: [ Debug ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup VSTest
+        uses: darenm/Setup-VSTest@v1.2
+
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}/*
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: Run test
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: SolutionTest.dll
+          searchFolder: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\bin\${{ matrix.platform }}\${{ matrix.configuration }}\${{ matrix.dotnet_version }}\
           runInParallel: true

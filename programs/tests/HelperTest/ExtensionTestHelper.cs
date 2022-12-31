@@ -11,15 +11,11 @@
 
                 ServiceDescriptor? service = services.Where(service => service.ServiceType.Name == type.Name).FirstOrDefault();
 
-                try {
-                    checks.Add(() => Assert.Equal(ServiceLifetime.Scoped, service?.Lifetime));
+                checks.Add(() => Assert.Equal(ServiceLifetime.Scoped, service?.Lifetime));
 
-                    checks.Add(() => Assert.Equal(type, service?.ServiceType));
+                checks.Add(() => Assert.Equal(type, service?.ServiceType));
 
-                    actions.Add(item => Assert.Multiple(checks.ToArray()));
-                } catch (NullReferenceException) {
-                    throw;
-                }
+                actions.Add(item => Assert.Multiple(checks.ToArray()));
             }
 
             Assert.Collection<ServiceDescriptor>(services, actions.ToArray());

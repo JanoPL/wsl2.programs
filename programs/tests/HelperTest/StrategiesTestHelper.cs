@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace HelperTest
 {
@@ -8,8 +9,9 @@ namespace HelperTest
         {
             try {
                 strategies.Execute();
-            } catch (Exception ex) {
-                Assert.Fail(ex.Message);
+            } catch (RuntimeBinderException ex) {
+                Assert.True(!string.IsNullOrEmpty(ex.Message), ex.Message);
+                throw;
             }
 
             Assert.True(true);
