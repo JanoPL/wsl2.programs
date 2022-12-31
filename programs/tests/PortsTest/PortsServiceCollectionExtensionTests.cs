@@ -1,3 +1,5 @@
+using System.Xml.XPath;
+using HelperTest;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ports;
@@ -23,12 +25,7 @@ namespace PortsTest
 
             Assert.True(services.Count >= 1);
 
-            Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IPorts), item.ServiceType)
-                )
-            );
+            ExtensionTestHelper.CheckServices(services, new[] { typeof(IPorts) });
         }
 
         [Fact]
@@ -40,12 +37,7 @@ namespace PortsTest
 
             Assert.True(services.Count >= 1);
 
-            Assert.Collection<ServiceDescriptor>(services,
-                item => Assert.Multiple(
-                        () => Assert.Equal(ServiceLifetime.Scoped, item.Lifetime),
-                        () => Assert.Equal(typeof(IPorts), item.ServiceType)
-                )
-            );
+            ExtensionTestHelper.CheckServices(services, new[] { typeof(IPorts) });
         }
     }
 }
