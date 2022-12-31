@@ -1,0 +1,36 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Portproxy list": {
+      "commandName": "Project",
+      "commandLineArgs": "-l"
+    },
+    "Portproxy delete": {
+      "commandName": "Project",
+      "commandLineArgs": "-d"
+    },
+    "Portproxy create": {
+      "commandName": "Project",
+      "commandLineArgs": "-c"
+    },
+    "Portproxy help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "Portproxy version": {
+      "commandName": "Project",
+      "commandLineArgs": "--version"
+    },
+    "Portproxy list ports": {
+      "commandName": "Project",
+      "commandLineArgs": "--list-ports"
+    },
+    "portproxy list address": {
+      "commandName": "Project",
+      "commandLineArgs": "--list-address"
+    }
+  }
+}
