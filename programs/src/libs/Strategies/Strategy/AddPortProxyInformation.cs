@@ -46,11 +46,6 @@ namespace Strategies
                 while (!proc.StandardOutput.EndOfStream) {
                     string? line = proc.StandardOutput.ReadLine();
 
-                    //if (string.IsNullOrEmpty(line)) {
-                    //    _logger.LogInformation("There is no portproxy information");
-                    //    return;
-                    //}
-
                     if (line != null) { 
                         _logger.LogInformation("{line}", line);
                     }
