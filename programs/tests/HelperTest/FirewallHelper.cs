@@ -1,10 +1,4 @@
-﻿using System.Runtime.Versioning;
-using Firewall;
-using Moq;
-using WSL;
-using Xunit;
-
-namespace HelperTest
+﻿namespace HelperTest
 {
     [SupportedOSPlatform("windows")]
     public class FirewallHelper : WslHelper

@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Moq;
-using WSL;
-using Xunit;
-
-namespace HelperTest
+﻿namespace HelperTest
 {
     public class WslHelper : LoggerHelper
     {
