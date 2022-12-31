@@ -13,7 +13,7 @@ using Ports;
 namespace Portproxy
 {
     [SupportedOSPlatform("windows")]
-    public class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
