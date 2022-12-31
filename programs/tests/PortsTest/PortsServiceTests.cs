@@ -1,5 +1,4 @@
-﻿using System.Text;
-using HelperTest;
+﻿using HelperTest;
 using Ports;
 using Ports.Models;
 
@@ -9,7 +8,7 @@ namespace PortsTest
     {
         private static string GetJsonToParse()
         {
-           return "{\n   \"table\": [\n      {\n         \"state\": \"LISTEN\",\n         \"recv-q\": \"0\",\n         \"send-q\": \"128\",\n         \"local\": \"0.0.0.0:22\",\n         \"address:port\": \"0.0.0.0:*\",\n         \"peer\": null,\n         \"address:portprocess\": null\n      }\n   ]\n}\n";
+            return "{\n   \"table\": [\n      {\n         \"state\": \"LISTEN\",\n         \"recv-q\": \"0\",\n         \"send-q\": \"128\",\n         \"local\": \"0.0.0.0:22\",\n         \"address:port\": \"0.0.0.0:*\",\n         \"peer\": null,\n         \"address:portprocess\": null\n      }\n   ]\n}\n";
         }
 
         private static string GetJsonFromParse()
@@ -17,7 +16,7 @@ namespace PortsTest
             return "LISTEN 0 128 0.0.0.0:22 0.0.0.0:*  \r\n";
         }
 
-        private PortsService GetService()
+        private static PortsService GetService()
         {
             TestHelper testHelper = new();
             var logger = testHelper.GetLogger<PortsService>();
