@@ -149,6 +149,12 @@ jobs:
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
   
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-firewall
+          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+  
   test_strategies_dotnet:
     name: Run strategies test dotnet
     runs-on: windows-2022
@@ -182,6 +188,12 @@ jobs:
 
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Strategies_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+  
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-strategies
+          path: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
   
   test_wsl_dotnet:
     name: Run Wsl test dotnet
@@ -217,6 +229,12 @@ jobs:
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
 
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-wsl
+          path: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+
   test_ports_dotnet:
     name: Run ports test dotnet
     runs-on: windows-2022
@@ -251,6 +269,12 @@ jobs:
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Ports_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
 
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-ports
+          path: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+
   test_solution_dotnet:
     name: Run solution test dotnet
     runs-on: windows-2022
@@ -284,3 +308,9 @@ jobs:
 
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Solution_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+      
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-solution
+          path: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
