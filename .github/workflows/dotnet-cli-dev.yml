@@ -316,7 +316,7 @@ jobs:
   #        name: coverage-report-solution
   #        path: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
 
-  Codacy: 
+  codacy_firewall: 
     strategy:
       matrix:
         configuration: [ Debug ]
@@ -335,13 +335,17 @@ jobs:
         run: ls -R
         working-directory: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}
 
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_SECRET }}
-          coverage-reports: ${{ env.Firewall_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
-          force-coverage-parser: Cobertura
-          language: CSharp
+      - name: Run Codacy coverage reporter
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ env.Firewall_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
 
-      - name: Sending final notification to Codacy
-        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) final
+  codacy_finalize:
+    strategy:
+      matrix:
+        configuration: [ Debug ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: windows-2022
+    needs: [ codacy_firewall ]
+    steps:
+      - name: Finalize codacy reporter
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) final -t ${{ secrets.CODACY_PROJECT_SECRET }}
