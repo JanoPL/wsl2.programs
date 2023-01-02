@@ -148,169 +148,193 @@ jobs:
 
       - name: dotnet test
         run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
-  
+      
       - name: Upload artifact coverage
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-firewall
           path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
   
-  test_strategies_dotnet:
-    name: Run strategies test dotnet
-    runs-on: windows-2022
-    needs: [ build_dotnet ]
-    strategy:
-      matrix:
-        configuration: [ Debug ]
-        platform: [ x64 ]
-        dotnet_version: [ net6.0, net7.0 ]
-    steps:
-      - name: Setup dotnet ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+  #test_strategies_dotnet:
+  #  name: Run strategies test dotnet
+  #  runs-on: windows-2022
+  #  needs: [ build_dotnet ]
+  #  strategy:
+  #    matrix:
+  #      configuration: [ Debug ]
+  #      platform: [ x64 ]
+  #      dotnet_version: [ net6.0, net7.0 ]
+  #  steps:
+  #    - name: Setup dotnet ${{ matrix.dotnet-version }}
+  #      uses: actions/setup-dotnet@v3
+  #      with:
+  #        dotnet-version: ${{ matrix.dotnet-version }}
       
-      - name: restore cache workspace 
-        uses: actions/cache@v3
-        with: 
-          path: ${{ github.workspace }}
-          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  #    - name: restore cache workspace 
+  #      uses: actions/cache@v3
+  #      with: 
+  #        path: ${{ github.workspace }}
+  #        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
 
-      - name: restore cache packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #    - name: restore cache packages
+  #      uses: actions/cache@v3
+  #      with:
+  #        path: ~/.nuget/packages
+  #        key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: dotnet test
-        run: dotnet test ${{ github.workspace }}\${{ env.Strategies_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+  #    - name: dotnet test
+  #      run: dotnet test ${{ github.workspace }}\${{ env.Strategies_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+
+  #    - name: Upload artifact coverage
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: coverage-report-strategies
+  #        path: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
   
-      - name: Upload artifact coverage
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-strategies
-          path: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
-  
-  test_wsl_dotnet:
-    name: Run Wsl test dotnet
-    runs-on: windows-2022
-    needs: [ build_dotnet ]
+  #test_wsl_dotnet:
+  #  name: Run Wsl test dotnet
+  #  runs-on: windows-2022
+  #  needs: [ build_dotnet ]
+  #  strategy:
+  #    matrix:
+  #      configuration: [ Debug ]
+  #      platform: [ x64 ]
+  #      dotnet_version: [ net6.0, net7.0 ]
+  #  steps:
+  #    - name: Setup dotnet ${{ matrix.dotnet-version }}
+  #      uses: actions/setup-dotnet@v3
+  #      with:
+  #        dotnet-version: ${{ matrix.dotnet-version }}
+      
+  #    - name: restore cache workspace 
+  #      uses: actions/cache@v3
+  #      with: 
+  #        path: ${{ github.workspace }}
+  #        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+  #    - name: restore cache packages
+  #      uses: actions/cache@v3
+  #      with:
+  #        path: ~/.nuget/packages
+  #        key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+  #    - name: dotnet test
+  #      run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+
+  #    - name: Upload artifact coverage
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: coverage-report-wsl
+  #        path: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+
+  #test_ports_dotnet:
+  #  name: Run ports test dotnet
+  #  runs-on: windows-2022
+  #  needs: [ build_dotnet ]
+  #  strategy:
+  #    matrix:
+  #      configuration: [ Debug ]
+  #      platform: [ x64 ]
+  #      dotnet_version: [ net6.0, net7.0 ]
+  #  steps:
+  #    - name: Setup dotnet ${{ matrix.dotnet-version }}
+  #      uses: actions/setup-dotnet@v3
+  #      with:
+  #        dotnet-version: ${{ matrix.dotnet-version }}
+      
+  #    - name: restore cache workspace 
+  #      uses: actions/cache@v3
+  #      with: 
+  #        path: ${{ github.workspace }}
+  #        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+  #    - name: restore cache packages
+  #      uses: actions/cache@v3
+  #      with:
+  #        path: ~/.nuget/packages
+  #        key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+  #    - name: dotnet test
+  #      run: dotnet test ${{ github.workspace }}\${{ env.Ports_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+
+  #    - name: Upload artifact coverage
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: coverage-report-ports
+  #        path: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+
+  #test_solution_dotnet:
+  #  name: Run solution test dotnet
+  #  runs-on: windows-2022
+  #  needs: [ build_dotnet ]
+  #  strategy:
+  #    matrix:
+  #      configuration: [ Debug ]
+  #      platform: [ x64 ]
+  #      dotnet_version: [ net6.0, net7.0 ]
+  #  steps:
+  #    - name: Setup dotnet ${{ matrix.dotnet-version }}
+  #      uses: actions/setup-dotnet@v3
+  #      with:
+  #        dotnet-version: ${{ matrix.dotnet-version }}
+      
+  #    - name: restore cache workspace 
+  #      uses: actions/cache@v3
+  #      with: 
+  #        path: ${{ github.workspace }}
+  #        key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+  #    - name: restore cache packages
+  #      uses: actions/cache@v3
+  #      with:
+  #        path: ~/.nuget/packages
+  #        key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+  #        restore-keys: |
+  #          ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+  #    - name: dotnet test
+  #      run: dotnet test ${{ github.workspace }}\${{ env.Solution_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+      
+  #    - name: Upload artifact coverage
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: coverage-report-solution
+  #        path: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+
+  Codacy: 
     strategy:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0, net7.0 ]
-    steps:
-      - name: Setup dotnet ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-      
-      - name: restore cache workspace 
-        uses: actions/cache@v3
-        with: 
-          path: ${{ github.workspace }}
-          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-
-      - name: restore cache packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-
-      - name: dotnet test
-        run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
-
-      - name: Upload artifact coverage
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-wsl
-          path: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
-
-  test_ports_dotnet:
-    name: Run ports test dotnet
     runs-on: windows-2022
-    needs: [ build_dotnet ]
-    strategy:
-      matrix:
-        configuration: [ Debug ]
-        platform: [ x64 ]
-        dotnet_version: [ net6.0, net7.0 ]
+    needs: [ test_firewall_dotnet ]
     steps:
-      - name: Setup dotnet ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
+      - name: Download a build artifacts
+        uses: actions/download-artifact@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-      
-      - name: restore cache workspace 
-        uses: actions/cache@v3
-        with: 
-          path: ${{ github.workspace }}
-          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          name: coverage-report-firewall
+          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults
 
-      - name: restore cache packages
-        uses: actions/cache@v3
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-
-      - name: dotnet test
-        run: dotnet test ${{ github.workspace }}\${{ env.Ports_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
-
-      - name: Upload artifact coverage
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-ports
-          path: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
-
-  test_solution_dotnet:
-    name: Run solution test dotnet
-    runs-on: windows-2022
-    needs: [ build_dotnet ]
-    strategy:
-      matrix:
-        configuration: [ Debug ]
-        platform: [ x64 ]
-        dotnet_version: [ net6.0, net7.0 ]
-    steps:
-      - name: Setup dotnet ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-      
-      - name: restore cache workspace 
-        uses: actions/cache@v3
-        with: 
-          path: ${{ github.workspace }}
-          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
-
-      - name: restore cache packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-
-      - name: dotnet test
-        run: dotnet test ${{ github.workspace }}\${{ env.Solution_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
-      
-      - name: Upload artifact coverage
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-solution
-          path: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+          project-token: ${{ secrets.CODACY_PROJECT_SECRET }}
+          coverage-reports: programs\\tests\\FireWallTest\\TestResults\\*\\coverage.cobertura.xml
