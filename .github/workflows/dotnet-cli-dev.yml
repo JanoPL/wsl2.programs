@@ -9,6 +9,7 @@ env:
   Solution_Name_Portproxy: programs\portproxy.sln
   Firewall_Test_Project_Path: programs\tests\FireWallTest\FirewallTest.csproj
   Firewall_Test_Project_dir: programs\tests\FireWallTest
+  Firewall_Test_Coverage_Project_dir: programs/tests/FireWallTest
   Strategies_Test_Project_Path: programs\tests\StrategiesTest\StrategiesTest.csproj
   Strategies_Test_Project_dir: programs\tests\StrategiesTest
   Wsl_Test_Project_Path: programs\tests\WslTest\WslTest.csproj
@@ -147,13 +148,13 @@ jobs:
             ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - name: dotnet test
-        run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --collect "XPlat Code Coverage"
+        run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       
       - name: Upload artifact coverage
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-firewall
-          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults\*\coverage.cobertura.xml
+          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
   
   #test_strategies_dotnet:
   #  name: Run strategies test dotnet
@@ -320,6 +321,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
     runs-on: windows-2022
     needs: [ test_firewall_dotnet ]
     steps:
@@ -327,14 +329,19 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage-report-firewall
-          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults
+          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\TestResults
+        working-directory: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_SECRET }}
-          coverage-reports: programs\\tests\\FireWallTest\\TestResults\\*\\coverage.cobertura.xml
+          coverage-reports: ${{ env.Firewall_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+          force-coverage-parser: Cobertura
+          language: CSharp
+
+      - name: Sending final notification to Codacy
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) final
