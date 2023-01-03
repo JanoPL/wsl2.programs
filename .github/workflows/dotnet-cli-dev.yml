@@ -335,7 +335,7 @@ jobs:
         id: firewall
         with:
           name: coverage-report-firewall
-          path: ${{ github.workspace }}/${{ env.Firewall_Test_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+          path: ${{ github.workspace }}/${{ env.Firewall_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
 
       - name: Display structure of firewall files
         run: ls -R
@@ -359,7 +359,7 @@ jobs:
         id: strategies
         with:
           name: coverage-report-strategies
-          path: ${{ github.workspace }}/${{ env.Strategies_Test_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+          path: ${{ github.workspace }}/${{ env.Strategies_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
 
       - name: Display structure of Strategies files
         run: ls -R
@@ -383,7 +383,7 @@ jobs:
         id: wsl
         with:
           name: coverage-report-wsl
-          path: ${{ github.workspace }}/${{ env.Wsl_Test_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+          path: ${{ github.workspace }}/${{ env.wsl_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
 
       - name: Display structure of Wsl files
         run: ls -R
