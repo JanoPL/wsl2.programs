@@ -445,8 +445,7 @@ jobs:
       matrix:
         configuration: [ Debug ]
         platform: [ x64 ]
-        dotnet_version: [ net6.0, net7.0 ]
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     needs: [ codacy_firewall, codacy_strategies, codacy_wsl, codacy_ports, codacy_solution ]
     steps:
       - name: Finalize codacy reporter
