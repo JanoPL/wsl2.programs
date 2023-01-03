@@ -141,6 +141,7 @@ _TeamCity*
 *.coverage
 *.coveragexml
 coveragereport/
+*.cobertura.XML
 
 # NCrunch
 _NCrunch_*
