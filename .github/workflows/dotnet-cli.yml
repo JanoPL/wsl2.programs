@@ -1,0 +1,453 @@
+name: .NET Console Desktop with dotnet-cli
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  Solution_Name_Portproxy: programs\portproxy.sln
+  Firewall_Test_Project_Path: programs\tests\FireWallTest\FirewallTest.csproj
+  Firewall_Test_Project_dir: programs\tests\FireWallTest
+  Firewall_Test_Coverage_Project_dir: programs/tests/FireWallTest
+  Strategies_Test_Project_Path: programs\tests\StrategiesTest\StrategiesTest.csproj
+  Strategies_Test_Project_dir: programs\tests\StrategiesTest
+  Strategies_Test_Coverage_Project_dir: programs/tests/StrategiesTest
+  Wsl_Test_Project_Path: programs\tests\WslTest\WslTest.csproj
+  Wsl_Test_Project_dir: programs\tests\WslTest
+  wsl_Test_Coverage_Project_dir: programs/tests/WslTest
+  Ports_Test_Project_Path: programs\tests\PortsTest\PortsTest.csproj
+  Ports_Test_Project_dir: programs\tests\PortsTest
+  Ports_Test_Coverage_Project_dir: programs/tests/PortsTest
+  Solution_Test_Project_Path: programs\tests\SolutionTest\SolutionTest.csproj
+  Solution_Test_Project_dir: programs\tests\SolutionTest
+  Solution_Test_Coverage_Project_dir: programs/tests/SolutionTest
+  Cache_Workplace_Key: ${{ github.workflow }}-workspace
+
+jobs:
+  checkout_dotnet:
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: store workspace cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+  restore_dotnet: 
+    name: Restore packages
+    runs-on: windows-2022
+    needs: [ checkout_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-checkout-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+      
+      - name: store cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      
+      - name: Restore Packages
+        run: nuget restore ${{ env.Solution_Name_Portproxy }} 
+
+      - name: store workspace cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+  
+  build_dotnet: 
+    name: Build Solution with dotnet
+    runs-on: windows-2022
+    needs: [ restore_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-restore-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: dotnet build
+        run: dotnet build ${{ github.workspace }}\${{ env.Solution_Name_Portproxy }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} --no-restore
+
+      - name: store workspace cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+   
+  test_firewall_dotnet:
+    name: Run firewall test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Firewall_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-firewall
+          path: ${{ github.workspace }}\${{ env.Firewall_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
+  
+  test_strategies_dotnet:
+    name: Run strategies test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Strategies_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-strategies
+          path: ${{ github.workspace }}\${{ env.Strategies_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
+  
+  test_wsl_dotnet:
+    name: Run Wsl test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Wsl_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-wsl
+          path: ${{ github.workspace }}\${{ env.Wsl_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+  test_ports_dotnet:
+    name: Run ports test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Ports_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-ports
+          path: ${{ github.workspace }}\${{ env.Ports_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+  test_solution_dotnet:
+    name: Run solution test dotnet
+    runs-on: windows-2022
+    needs: [ build_dotnet ]
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    steps:
+      - name: Setup dotnet ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      
+      - name: restore cache workspace 
+        uses: actions/cache@v3
+        with: 
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.Cache_Workplace_Key }}-build-${{ matrix.configuration}}-${{ matrix.platform }}-${{ matrix.dotnet_version }}-${{ github.run_id }}
+
+      - name: restore cache packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.workflow }}-${{ matrix.configuration }}-${{ matrix.dotnet_version }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: dotnet test
+        run: dotnet test ${{ github.workspace }}\${{ env.Solution_Test_Project_Path }} -c ${{ matrix.configuration }} -f ${{ matrix.dotnet_version }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      
+      - name: Upload artifact coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-solution
+          path: ${{ github.workspace }}\${{ env.Solution_Test_Project_dir }}\coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+  codacy_firewall: 
+    name: Codacy Coverage firewall partial
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: ubuntu-latest
+    needs: [ test_firewall_dotnet ]
+    steps:
+      - name: Download a firewall coverage artifacts
+        uses: actions/download-artifact@v3
+        id: firewall
+        with:
+          name: coverage-report-firewall
+          path: ${{ github.workspace }}/${{ env.Firewall_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+      - name: Display structure of firewall files
+        run: ls -R
+        working-directory: ${{ steps.firewall.outputs.download-path }}
+      
+      - name: Run Codacy coverage reporter partial firewall
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ steps.firewall.outputs.download-path }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
+      
+  codacy_strategies: 
+    name: Codacy Coverage strategies partial
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: ubuntu-latest
+    needs: [ test_strategies_dotnet ]
+    steps:
+      - name: Download a strategies coverage artifacts
+        uses: actions/download-artifact@v3
+        id: strategies
+        with:
+          name: coverage-report-strategies
+          path: ${{ github.workspace }}/${{ env.Strategies_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+      - name: Display structure of Strategies files
+        run: ls -R
+        working-directory: ${{ steps.strategies.outputs.download-path }}
+
+      - name: Run Codacy coverage reporter partials strategies
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ steps.strategies.outputs.download-path }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
+
+  codacy_wsl: 
+    name: Codacy Coverage wsl partial
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: ubuntu-latest
+    needs: [ test_wsl_dotnet ]
+    steps:
+      - name: Download a Wsl coverage artifacts
+        uses: actions/download-artifact@v3
+        id: wsl
+        with:
+          name: coverage-report-wsl
+          path: ${{ github.workspace }}/${{ env.wsl_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+      - name: Display structure of Wsl files
+        run: ls -R
+        working-directory: ${{ steps.wsl.outputs.download-path }}
+
+      - name: Run Codacy coverage reporter partials wsl
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ steps.wsl.outputs.download-path }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
+
+  codacy_ports: 
+    name: Codacy Coverage ports partial
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: ubuntu-latest
+    needs: [ test_ports_dotnet ]
+    steps:
+      - name: Download a ports coverage artifacts
+        uses: actions/download-artifact@v3
+        id: ports
+        with:
+          name: coverage-report-ports
+          path: ${{ github.workspace }}/${{ env.Ports_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+      - name: Display structure of ports files
+        run: ls -R
+        working-directory: ${{ steps.ports.outputs.download-path }}
+
+      - name: Run Codacy coverage reporter partials ports
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ steps.ports.outputs.download-path }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
+
+  codacy_solution: 
+    name: Codacy Coverage solution partial
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+        dotnet_version: [ net6.0, net7.0 ]
+    runs-on: ubuntu-latest
+    needs: [ test_solution_dotnet ]
+    steps:
+      - name: Download a solution coverage artifacts
+        uses: actions/download-artifact@v3
+        id: solution
+        with:
+          name: coverage-report-solution
+          path: ${{ github.workspace }}/${{ env.Solution_Test_Coverage_Project_dir }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml
+
+      - name: Display structure of solution files
+        run: ls -R
+        working-directory: ${{ steps.solution.outputs.download-path }}
+
+      - name: Run Codacy coverage reporter partials solution
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r ${{ steps.solution.outputs.download-path }}/coverage.${{ matrix.dotnet_version }}.cobertura.xml -t ${{ secrets.CODACY_PROJECT_SECRET }} --partial --language CSharp --force-coverage-parser Cobertura
+
+  codacy_finalize:
+    strategy:
+      matrix:
+        configuration: [ Release ]
+        platform: [ x64 ]
+    runs-on: ubuntu-latest
+    needs: [ codacy_firewall, codacy_strategies, codacy_wsl, codacy_ports, codacy_solution ]
+    steps:
+      - name: Finalize codacy reporter
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) final -t ${{ secrets.CODACY_PROJECT_SECRET }}
